@@ -1,4 +1,4 @@
-Dim_Locations|SalesRoms|Hotels (Sales)[Forecast Acronym],[Average Price],[Closing Rate],[Reservations Arrivals],[Contracts Processable]
+[SalesRoom],[Average Price],[Closing Rate],[Arrivals],[Contracts Processable],
 BRCSL,16930.3057,0.23333333,480,14
 BRECU,11990.2381,0.15789474,1030,21
 BREPC,14338.2228,0.09375,1882,18
