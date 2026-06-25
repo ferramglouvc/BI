@@ -1,0 +1,168 @@
+import streamlit as st
+
+
+def apply_styles(colors):
+    st.markdown(
+        f"""
+        <style>
+        [data-testid="stAppViewContainer"] {{
+            background: {colors["bg"]};
+            color: {colors["text"]};
+        }}
+
+        [data-testid="stHeader"] {{
+            background: {colors["bg"]};
+        }}
+
+        [data-testid="stSidebar"] {{
+            background: {colors["bg"]};
+        }}
+
+        .stApp {{
+            background: {colors["bg"]};
+            color: {colors["text"]};
+        }}
+
+        .block-container {{
+            padding-top: 1rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            padding-bottom: 1rem;
+        }}
+
+        div[data-baseweb="input"] input {{
+            font-size: 16px!important;
+            font-weight: 400 !important;
+        }}
+
+        button[data-testid="stNumberInputStepUp"],
+        button[data-testid="stNumberInputStepDown"] {{
+            height: 32px !important;
+            width: 32px !important;
+        }}
+
+        label[data-testid="stWidgetLabel"] p {{
+            font-size: 20px !important;
+            font-weight: 700 !important;
+        }}
+
+        .section-title {{
+            font-size: 20px;
+            font-weight: 800;
+            margin-top: 0.5rem;
+            margin-bottom: 0.25rem;
+        }}
+
+        .matrix-scroll {{
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }}
+
+        .matrix-table {{
+            width: 100%;
+            min-width: 620px;
+            table-layout: auto;
+            border-collapse: collapse;
+        }}
+
+        .matrix-table thead th {{
+            font-size: 14px;
+            font-weight: 800;
+            padding: 0px 04px 08px 00px;
+            text-align: center;
+            border-bottom: 1px solid {colors["border"]};
+            white-space: nowrap;
+            background: {colors["header_bg"]};
+            color: {colors["text"]};
+        }}
+
+        .matrix-table thead th:first-child,
+        .matrix-table tbody td:first-child {{
+            position: sticky;
+            left: 0;
+            z-index: 3;
+            background: {colors["sticky_bg"]};
+            text-align: left !important;
+            color: {colors["text"]};
+            width: 70px;
+            min-width: 70px;
+            max-width: 70px;
+        }}
+
+        .matrix-table thead th:first-child {{
+            width: 70px;
+            min-width: 70px;
+            max-width: 70px;
+            z-index: 4;
+        }}
+
+        .matrix-kpi-cell {{
+            font-size: 14px;
+            font-weight: 700;
+            padding-top: 10px;
+            line-height: 1.05;
+            width: 115px;
+            min-width: 115px;
+            max-width: 115px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            color: {colors["text"]};
+        }}
+
+        .matrix-value-card {{
+            border: 1px solid {colors["border"]};
+            border-radius: 10px;
+            padding: 1px 1px 1px 1px;
+            min-height: 12px;
+            background: {colors["card_bg"]};
+            display: flex;
+            align-items: center;
+        }}
+
+        .matrix-value {{
+            font-size: 15px;
+            font-weight: 600;
+            line-height: 1.05;
+            word-break: break-word;
+            color: {colors["text"]};
+            padding: 0 2px;
+            text-align: center;
+        }}
+
+        .matrix-value.positive {{
+            color: {colors["positive"]};
+        }}
+
+        .matrix-value.negative {{
+            color: {colors["negative"]};
+        }}
+
+        .matrix-value.neutral {{
+            color: {colors["text"]};
+        }}
+
+        @media (max-width: 768px) {{
+            .matrix-table {{
+                min-width: 620px;
+            }}
+
+            .matrix-value {{
+                font-size: 15px;
+            }}
+
+            .matrix-kpi-cell {{
+                font-size: 13px;
+                min-width: 70px;
+                max-width: 70px;
+            }}
+
+            .section-title {{
+                font-size: 18px;
+            }}
+        }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
