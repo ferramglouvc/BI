@@ -114,7 +114,7 @@ def render_matrix(rows, colors):
             font-size: 13px;
             font-weight: 700;
             line-height: 1.20;
-            padding-top: 4px;
+            padding-top: 2px;
             padding-bottom: 4px;
             width: 90px;
             min-width: 90px;
