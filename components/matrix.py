@@ -241,7 +241,6 @@ def render_matrix(rows, colors):
     </html>
     """
 
-    # Auto height: enough for all KPI rows, but still compact.
     height = 65 + (len(rows) * 23)
 
     st.components.v1.html(
