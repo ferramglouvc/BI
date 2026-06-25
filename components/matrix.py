@@ -86,7 +86,7 @@ def render_matrix(rows, colors):
         }}
 
         .matrix-table tbody td {{
-            padding-top: 5px;
+            padding-top: 2px;
             padding-bottom: 5px;
             padding-left: 0;
             padding-right: 0;
