@@ -261,6 +261,11 @@ matrix_rows = [
     ("VPG", vpg, proj_vpg, forecast_vpg, budget_vpg, var_vpg_fcst, var_vpg_budget, "money"),  
 ]
 
+# DEBUG (temporal)
+st.write(f"Número de filas: {len(matrix_rows)}")
+st.write([r[0] for r in matrix_rows])
+
+render_matrix(matrix_rows, COLORS)
 render_matrix(matrix_rows, COLORS)
 
 # =====================================
