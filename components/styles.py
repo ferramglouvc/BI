@@ -49,8 +49,8 @@ def apply_styles(colors):
         .section-title {{
             font-size: 20px;
             font-weight: 800;
-            margin-top: 0.5rem;
-            margin-bottom: 0.25rem;
+            margin-top: 0.2rem;
+            margin-bottom: 0.1rem;
         }}
 
         .matrix-scroll {{
@@ -158,7 +158,7 @@ def apply_styles(colors):
         }}
 
         .simulator-wrap {{
-            padding-top: 0.25rem;
+            padding-top: 0.0rem;
         }}
 
         @media (max-width: 768px) {{
