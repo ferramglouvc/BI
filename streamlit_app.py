@@ -1,5 +1,6 @@
 import streamlit as st
 from datetime import datetime, timedelta
+from pathlib import Path
 import uuid
 import calendar
 import pandas as pd
@@ -7,7 +8,7 @@ import pandas as pd
 from components.styles import apply_styles
 from components.matrix import render_matrix
 from services.loaders import load_data, load_metric_file
-from services.aggregations import aggregate_actual_defaults, aggregate_metric_defaults
+from services.aggregations import aggregate_actual_defaults
 from services.project_leaders import PROJECT_LEADERS
 
 # =====================================
@@ -116,9 +117,23 @@ with logout_col2:
 # DATA
 # =====================================
 
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
+
 df = load_data()
-forecast_df = load_metric_file("Jun_Forecast.csv")
-budget_df = load_metric_file("Jun_Budget.csv")
+
+forecast_file = "Jun_Forecast.csv"
+budget_file = "Jun_Budget.csv"
+
+forecast_df = load_metric_file(
+    forecast_file,
+    (DATA_DIR / forecast_file).stat().st_mtime
+)
+
+budget_df = load_metric_file(
+    budget_file,
+    (DATA_DIR / budget_file).stat().st_mtime
+)
 
 # =====================================
 # TITLE / LEGEND
@@ -133,6 +148,14 @@ st.caption(f"Data until {yesterday.strftime('%B %d, %Y')}")
 # HELPERS
 # =====================================
 
+def safe_float(value, default=0.0):
+    if value is None or pd.isna(value):
+        return default
+    try:
+        return float(value)
+    except Exception:
+        return default
+
 def input_card(title, value, step, fmt="%d"):
     with st.container(border=True):
         st.markdown(f"**{title}**")
@@ -143,6 +166,66 @@ def input_card(title, value, step, fmt="%d"):
             format=fmt,
             label_visibility="collapsed"
         )
+
+def summarize_metric_subset(subset: pd.DataFrame):
+    totals = {
+        "Arrivals": 0.0,
+        "Contracts": 0.0,
+        "Qs": 0.0,
+        "Volume": 0.0,
+    }
+
+    for _, row in subset.iterrows():
+        arrivals = safe_float(row.get("Arrivals"))
+        contracts = safe_float(row.get("Contracts"))
+        qs = safe_float(row.get("Qs"))
+        closing_rate = safe_float(row.get("Closing Rate"))
+        penetration = safe_float(row.get("Penetration"))
+        avg_price = safe_float(row.get("Average Price"))
+        vpg = safe_float(row.get("VPG"))
+        volume = safe_float(row.get("Volume"))
+
+        if closing_rate <= 1 and closing_rate > 0:
+            closing_rate *= 100
+
+        if penetration <= 1 and penetration > 0:
+            penetration *= 100
+
+        if qs <= 0 and contracts > 0 and closing_rate > 0:
+            qs = contracts / (closing_rate / 100)
+
+        if closing_rate <= 0 and contracts > 0 and qs > 0:
+            closing_rate = (contracts / qs) * 100
+
+        if arrivals <= 0 and qs > 0 and penetration > 0:
+            arrivals = qs / (penetration / 100)
+
+        if penetration <= 0 and qs > 0 and arrivals > 0:
+            penetration = (qs / arrivals) * 100
+
+        if volume <= 0 and contracts > 0 and avg_price > 0:
+            volume = contracts * avg_price
+
+        if avg_price <= 0 and contracts > 0 and volume > 0:
+            avg_price = volume / contracts
+
+        if vpg <= 0 and qs > 0 and volume > 0:
+            vpg = volume / qs
+
+        if volume <= 0 and qs > 0 and vpg > 0:
+            volume = vpg * qs
+
+        totals["Arrivals"] += arrivals
+        totals["Contracts"] += contracts
+        totals["Qs"] += qs
+        totals["Volume"] += volume
+
+    totals["Closing Rate"] = (totals["Contracts"] / totals["Qs"] * 100) if totals["Qs"] else 0
+    totals["Penetration"] = (totals["Qs"] / totals["Arrivals"] * 100) if totals["Arrivals"] else 0
+    totals["Average Price"] = (totals["Volume"] / totals["Contracts"]) if totals["Contracts"] else 0
+    totals["VPG"] = (totals["Volume"] / totals["Qs"]) if totals["Qs"] else 0
+
+    return totals
 
 # =====================================
 # PROJECT LEADER / SALESROOM FILTER
@@ -204,17 +287,15 @@ if budget_filtered.empty:
 
 if salesroom == "ALL":
     actual_arrivals, actual_contracts, actual_closing_rate, actual_avg_price = aggregate_actual_defaults(filtered)
-    forecast_agg = aggregate_metric_defaults(forecast_filtered, selected_salesrooms)
-    budget_agg = aggregate_metric_defaults(budget_filtered, selected_salesrooms)
 else:
     row = filtered.iloc[0]
-    forecast_row = forecast_filtered.iloc[0]
-    budget_row = budget_filtered.iloc[0]
-
     actual_arrivals = int(round(float(row["Arrivals"])))
     actual_contracts = int(round(float(row["Contracts Processable"])))
     actual_closing_rate = float(row["Closing Rate"]) * 100 if float(row["Closing Rate"]) <= 1 else float(row["Closing Rate"])
     actual_avg_price = int(round(float(row["Average Price"])))
+
+forecast_summary = summarize_metric_subset(forecast_filtered)
+budget_summary = summarize_metric_subset(budget_filtered)
 
 # =====================================
 # ACTUAL INPUTS
@@ -276,63 +357,27 @@ proj_avg_price = (proj_volume / proj_contracts) if proj_contracts else 0
 # FORECAST TARGETS
 # =====================================
 
-if salesroom == "ALL":
-    forecast_arrivals = forecast_agg["Arrivals"]
-    forecast_penetration = forecast_agg["Penetration"]
-    forecast_qs = forecast_agg["Qs"]
-    forecast_contracts = forecast_agg["Contracts"]
-    forecast_avg_price = forecast_agg["Average Price"]
-    forecast_closing_rate = forecast_agg["Closing Rate"]
-    forecast_vpg = forecast_agg["VPG"]
-    forecast_volume = forecast_agg["Volume"]
-else:
-    forecast_arrivals = float(forecast_row.get("Arrivals", 0))
-
-    forecast_penetration = float(forecast_row.get("Penetration", 0))
-    if forecast_penetration <= 1:
-        forecast_penetration *= 100
-
-    forecast_qs = float(forecast_row.get("Qs", 0))
-    forecast_contracts = float(forecast_row.get("Contracts", 0))
-    forecast_avg_price = float(forecast_row.get("Average Price", 0))
-
-    forecast_closing_rate = float(forecast_row.get("Closing Rate", 0))
-    if forecast_closing_rate <= 1:
-        forecast_closing_rate *= 100
-
-    forecast_vpg = float(forecast_row.get("VPG", 0))
-    forecast_volume = float(forecast_row.get("Volume", 0))
+forecast_arrivals = forecast_summary["Arrivals"]
+forecast_penetration = forecast_summary["Penetration"]
+forecast_qs = forecast_summary["Qs"]
+forecast_contracts = forecast_summary["Contracts"]
+forecast_avg_price = forecast_summary["Average Price"]
+forecast_closing_rate = forecast_summary["Closing Rate"]
+forecast_vpg = forecast_summary["VPG"]
+forecast_volume = forecast_summary["Volume"]
 
 # =====================================
 # BUDGET TARGETS
 # =====================================
 
-if salesroom == "ALL":
-    budget_arrivals = budget_agg["Arrivals"]
-    budget_penetration = budget_agg["Penetration"]
-    budget_qs = budget_agg["Qs"]
-    budget_contracts = budget_agg["Contracts"]
-    budget_avg_price = budget_agg["Average Price"]
-    budget_closing_rate = budget_agg["Closing Rate"]
-    budget_vpg = budget_agg["VPG"]
-    budget_volume = budget_agg["Volume"]
-else:
-    budget_arrivals = float(budget_row.get("Arrivals", 0))
-
-    budget_penetration = float(budget_row.get("Penetration", 0))
-    if budget_penetration <= 1:
-        budget_penetration *= 100
-
-    budget_qs = float(budget_row.get("Qs", 0))
-    budget_contracts = float(budget_row.get("Contracts", 0))
-    budget_avg_price = float(budget_row.get("Average Price", 0))
-
-    budget_closing_rate = float(budget_row.get("Closing Rate", 0))
-    if budget_closing_rate <= 1:
-        budget_closing_rate *= 100
-
-    budget_vpg = float(budget_row.get("VPG", 0))
-    budget_volume = float(budget_row.get("Volume", 0))
+budget_arrivals = budget_summary["Arrivals"]
+budget_penetration = budget_summary["Penetration"]
+budget_qs = budget_summary["Qs"]
+budget_contracts = budget_summary["Contracts"]
+budget_avg_price = budget_summary["Average Price"]
+budget_closing_rate = budget_summary["Closing Rate"]
+budget_vpg = budget_summary["VPG"]
+budget_volume = budget_summary["Volume"]
 
 # =====================================
 # VARIANCES
