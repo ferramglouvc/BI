@@ -31,18 +31,18 @@ def apply_styles(colors):
         }}
 
         div[data-baseweb="input"] input {{
-            font-size: 16px!important;
+            font-size: 16px !important;
             font-weight: 400 !important;
         }}
 
         button[data-testid="stNumberInputStepUp"],
         button[data-testid="stNumberInputStepDown"] {{
-            height: 32px !important;
-            width: 32px !important;
+            height: 24px !important;
+            width: 24px !important;
         }}
 
         label[data-testid="stWidgetLabel"] p {{
-            font-size: 20px !important;
+            font-size: 16px !important;
             font-weight: 700 !important;
         }}
 
@@ -61,15 +61,15 @@ def apply_styles(colors):
 
         .matrix-table {{
             width: 100%;
-            min-width: 620px;
-            table-layout: auto;
+            min-width: 720px;
+            table-layout: fixed;
             border-collapse: collapse;
         }}
 
         .matrix-table thead th {{
-            font-size: 14px;
-            font-weight: 800;
-            padding: 0px 04px 08px 00px;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 0px 4px 4px 0px;
             text-align: center;
             border-bottom: 1px solid {colors["border"]};
             white-space: nowrap;
@@ -85,26 +85,23 @@ def apply_styles(colors):
             background: {colors["sticky_bg"]};
             text-align: left !important;
             color: {colors["text"]};
-            width: 70px;
-            min-width: 70px;
-            max-width: 70px;
+            width: 80px;
+            min-width: 80px;
+            max-width: 80px;
         }}
 
         .matrix-table thead th:first-child {{
-            width: 70px;
-            min-width: 70px;
-            max-width: 70px;
             z-index: 4;
         }}
 
         .matrix-kpi-cell {{
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
-            padding-top: 10px;
+            padding-top: 4px;
             line-height: 1.05;
-            width: 115px;
-            min-width: 115px;
-            max-width: 115px;
+            width: 80px;
+            min-width: 80px;
+            max-width: 80px;
             overflow: hidden;
             white-space: nowrap;
             text-overflow: ellipsis;
@@ -114,20 +111,20 @@ def apply_styles(colors):
         .matrix-value-card {{
             border: 1px solid {colors["border"]};
             border-radius: 10px;
-            padding: 1px 1px 1px 1px;
+            padding: 1px;
             min-height: 12px;
             background: {colors["card_bg"]};
             display: flex;
             align-items: center;
+            justify-content: center;
         }}
 
         .matrix-value {{
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 14px;
+            font-weight: 700;
             line-height: 1.05;
             word-break: break-word;
             color: {colors["text"]};
-            padding: 0 2px;
             text-align: center;
         }}
 
@@ -143,23 +140,44 @@ def apply_styles(colors):
             color: {colors["text"]};
         }}
 
+        div[data-testid="stNumberInputContainer"] {{
+            max-width: 150px;
+        }}
+
+        div[data-testid="stNumberInput"] input {{
+            padding-top: 0.25rem !important;
+            padding-bottom: 0.25rem !important;
+            font-size: 14px !important;
+        }}
+
+        div[data-testid="stButton"] button {{
+            min-height: 2.2rem;
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+            font-size: 0.9rem;
+        }}
+
+        .simulator-wrap {{
+            padding-top: 0.25rem;
+        }}
+
         @media (max-width: 768px) {{
             .matrix-table {{
-                min-width: 620px;
+                min-width: 720px;
             }}
 
-            .matrix-value {{
-                font-size: 15px;
+            .matrix-table thead th {{
+                font-size: 11px;
             }}
 
             .matrix-kpi-cell {{
-                font-size: 13px;
-                min-width: 70px;
-                max-width: 70px;
+                font-size: 11px;
+                min-width: 80px;
+                max-width: 80px;
             }}
 
-            .section-title {{
-                font-size: 18px;
+            .matrix-value {{
+                font-size: 12px;
             }}
         }}
         </style>
