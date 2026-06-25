@@ -16,6 +16,31 @@ st.set_page_config(
     layout="wide"
 )
 
+st.markdown(
+    """
+    <style>
+    [data-testid="stAppViewContainer"] {
+        background: #0e1117;
+        color: #f5f7fa;
+    }
+
+    [data-testid="stHeader"] {
+        background: #0e1117;
+    }
+
+    [data-testid="stSidebar"] {
+        background: #0e1117;
+    }
+
+    .stApp {
+        background: #0e1117;
+        color: #f5f7fa;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # =====================================
 # SIMPLE LOGIN
 # =====================================
@@ -441,7 +466,7 @@ def render_matrix(rows):
 
         .matrix-table {{
             width: 100%;
-            min-width: 720px;
+            min-width: 820px;
             table-layout: auto;
             border-collapse: collapse;
         }}
@@ -559,7 +584,7 @@ def render_matrix(rows):
 
         @media (max-width: 768px) {{
             .matrix-table {{
-                min-width: 620px;
+                min-width: 820px;
             }}
 
             .matrix-table thead th {{
@@ -587,6 +612,7 @@ def render_matrix(rows):
               <col class="actual-col">
               <col class="projected-col">
               <col class="forecast-col">
+              <col class="variance-col">
               <col class="budget-col">
               <col class="variance-col">
             </colgroup>
@@ -597,22 +623,29 @@ def render_matrix(rows):
                 <th>Actuals</th>
                 <th>Projected</th>
                 <th>Forecast</th>
+                <th>Var vs Fcst</th>
                 <th>Budget</th>
-                <th>Variance</th>
+                <th>Var vs Budget</th>
               </tr>
             </thead>
 
             <tbody>
     """
 
-    for label, actual, projected, forecast, budget, variance, kind in rows:
+    for label, actual, projected, forecast, budget, var_vs_fcst, var_vs_budget, kind in rows:
 
-        tone = "neutral"
+        tone_fcst = "neutral"
+        tone_budget = "neutral"
 
-        if variance > 0:
-            tone = "positive"
-        elif variance < 0:
-            tone = "negative"
+        if var_vs_fcst > 0:
+            tone_fcst = "positive"
+        elif var_vs_fcst < 0:
+            tone_fcst = "negative"
+
+        if var_vs_budget > 0:
+            tone_budget = "positive"
+        elif var_vs_budget < 0:
+            tone_budget = "negative"
 
         html_out += f"""
               <tr>
@@ -635,11 +668,15 @@ def render_matrix(rows):
                 </td>
 
                 <td>
+                  {value_card(fmt_matrix(kind, var_vs_fcst, variance=True), tone=tone_fcst)}
+                </td>
+
+                <td>
                   {value_card(fmt_matrix(kind, budget), tone="neutral")}
                 </td>
 
                 <td>
-                  {value_card(fmt_matrix(kind, variance, variance=True), tone=tone)}
+                  {value_card(fmt_matrix(kind, var_vs_budget, variance=True), tone=tone_budget)}
                 </td>
               </tr>
         """
@@ -777,17 +814,26 @@ budget_vpg = float(budget_row.get("VPG", 0))
 budget_volume = float(budget_row.get("Volume", 0))
 
 # =====================================
-# VARIANCES VS BUDGET
+# VARIANCES
 # =====================================
 
-var_arrivals = proj_arrivals - budget_arrivals
-var_contracts = proj_contracts - budget_contracts
-var_qs = proj_qs - budget_qs
-var_volume = proj_volume - budget_volume
-var_penetration_pp = proj_penetration - budget_penetration
-var_closing_pp = proj_closing_rate - budget_closing_rate
-var_vpg = proj_vpg - budget_vpg
-var_avg_price = proj_avg_price - budget_avg_price
+var_arrivals_fcst = proj_arrivals - forecast_arrivals
+var_contracts_fcst = proj_contracts - forecast_contracts
+var_qs_fcst = proj_qs - forecast_qs
+var_volume_fcst = proj_volume - forecast_volume
+var_penetration_pp_fcst = proj_penetration - forecast_penetration
+var_closing_pp_fcst = proj_closing_rate - forecast_closing_rate
+var_vpg_fcst = proj_vpg - forecast_vpg
+var_avg_price_fcst = proj_avg_price - forecast_avg_price
+
+var_arrivals_budget = proj_arrivals - budget_arrivals
+var_contracts_budget = proj_contracts - budget_contracts
+var_qs_budget = proj_qs - budget_qs
+var_volume_budget = proj_volume - budget_volume
+var_penetration_pp_budget = proj_penetration - budget_penetration
+var_closing_pp_budget = proj_closing_rate - budget_closing_rate
+var_vpg_budget = proj_vpg - budget_vpg
+var_avg_price_budget = proj_avg_price - budget_avg_price
 
 # =====================================
 # MATRIX
@@ -799,14 +845,13 @@ st.caption(
 )
 
 matrix_rows = [
-    ("Arrivals", arrivals, proj_arrivals, forecast_arrivals, budget_arrivals, var_arrivals, "int"),
-    ("Contracts", contracts, proj_contracts, forecast_contracts, budget_contracts, var_contracts, "int"),
-    ("Closing Rate", closing_rate, proj_closing_rate, forecast_closing_rate, budget_closing_rate, var_closing_pp, "pct"),
-    ("Average Price", avg_price, proj_avg_price, forecast_avg_price, budget_avg_price, var_avg_price, "money"),
-    ("Qs", qs, proj_qs, forecast_qs, budget_qs, var_qs, "int"),
-    ("Penetration", penetration, proj_penetration, forecast_penetration, budget_penetration, var_penetration_pp, "pct"),
-    ("VPG", vpg, proj_vpg, forecast_vpg, budget_vpg, var_vpg, "money"),
-    ("Volume", volume, proj_volume, forecast_volume, budget_volume, var_volume, "money"),
+    ("Arrivals", arrivals, proj_arrivals, forecast_arrivals, budget_arrivals, var_arrivals_fcst, var_arrivals_budget, "int"),
+    ("Contracts", contracts, proj_contracts, forecast_contracts, budget_contracts, var_contracts_fcst, var_contracts_budget, "int"),
+    ("Closing Rate", closing_rate, proj_closing_rate, forecast_closing_rate, budget_closing_rate, var_closing_pp_fcst, var_closing_pp_budget, "pct"),
+    ("Average Price", avg_price, proj_avg_price, forecast_avg_price, budget_avg_price, var_avg_price_fcst, var_avg_price_budget, "money"),
+    ("Qs", qs, proj_qs, forecast_qs, budget_qs, var_qs_fcst, var_qs_budget, "int"),
+    ("Penetration", penetration, proj_penetration, forecast_penetration, budget_penetration, var_penetration_pp_fcst, var_penetration_pp_budget, "pct"),
+    ("VPG", vpg, proj_vpg, forecast_vpg, budget_vpg, var_vpg_fcst, var_vpg_budget, "money"),
+    ("Volume", volume, proj_volume, forecast_volume, budget_volume, var_volume_fcst, var_volume_budget, "money"),
 ]
-
 render_matrix(matrix_rows)
