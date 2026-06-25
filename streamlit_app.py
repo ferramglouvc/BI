@@ -260,6 +260,12 @@ matrix_rows = [
 render_matrix(matrix_rows, COLORS)
 
 # =====================================
+# ACTUALS SIMULATOR
+# =====================================
+
+render_simulator()
+
+# =====================================
 # BOTTOM ACTIONS
 # =====================================
 
