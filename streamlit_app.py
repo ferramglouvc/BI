@@ -80,7 +80,7 @@ budget_df = load_metric_file(
 # HEADER
 # =====================================
 
-st.title("Calculadora BI")
+st.title("BI Calculator)
 
 yesterday = datetime.now() - timedelta(days=1)
 st.caption(f"Data until {yesterday.strftime('%B %d, %Y')}")
