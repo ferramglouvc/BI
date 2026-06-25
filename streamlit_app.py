@@ -99,21 +99,6 @@ if st.session_state.username:
         st.stop()
 
 # =====================================
-# LOGOUT BUTTON
-# =====================================
-
-logout_col1, logout_col2 = st.columns([8, 1])
-
-with logout_col2:
-    if st.button("Logout"):
-        user = st.session_state.username
-        if user in st.session_state.active_users:
-            del st.session_state.active_users[user]
-        st.session_state.authenticated = False
-        st.session_state.username = None
-        st.rerun()
-
-# =====================================
 # DATA
 # =====================================
 
@@ -136,13 +121,25 @@ budget_df = load_metric_file(
 )
 
 # =====================================
-# TITLE / LEGEND
+# TITLE
 # =====================================
 
-st.title("Calculadora BI")
+title_col, reset_col, logout_col = st.columns([8,1,1])
 
-yesterday = datetime.now() - timedelta(days=1)
-st.caption(f"Data until {yesterday.strftime('%B %d, %Y')}")
+with title_col:
+    st.title("Calculadora BI")
+
+with reset_col:
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    if st.button("↺ Reset", use_container_width=True):
+        st.rerun()
+
+with logout_col:
+    st.markdown("<br>", unsafe_allow_html=True)
+
+if st.button("↺", help="Reset simulator", use_container_width=True):
+    st.rerun()
 
 # =====================================
 # HELPERS
