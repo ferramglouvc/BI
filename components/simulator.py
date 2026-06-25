@@ -1,0 +1,86 @@
+import streamlit as st
+
+
+def init_simulator_context(context_key, defaults):
+    if st.session_state.get("sim_context") != context_key:
+        st.session_state["sim_defaults"] = defaults
+        st.session_state["sim_arrivals"] = defaults["arrivals"]
+        st.session_state["sim_contracts"] = defaults["contracts"]
+        st.session_state["sim_closing_rate"] = defaults["closing_rate"]
+        st.session_state["sim_avg_price"] = defaults["avg_price"]
+        st.session_state["sim_context"] = context_key
+
+
+def render_simulator():
+    st.markdown("<div class='section-title'>Actuals Simulator</div>", unsafe_allow_html=True)
+    st.markdown("<div class='simulator-wrap'>", unsafe_allow_html=True)
+
+    sim_c1, sim_c2, sim_c3, sim_c4 = st.columns(4, gap="small")
+
+    with sim_c1:
+        st.number_input(
+            "Arrivals",
+            key="sim_arrivals",
+            value=float(st.session_state["sim_arrivals"]),
+            step=1.0,
+            format="%.0f",
+            label_visibility="visible"
+        )
+
+    with sim_c2:
+        st.number_input(
+            "Contracts",
+            key="sim_contracts",
+            value=float(st.session_state["sim_contracts"]),
+            step=1.0,
+            format="%.0f",
+            label_visibility="visible"
+        )
+
+    with sim_c3:
+        st.number_input(
+            "Closing Rate %",
+            key="sim_closing_rate",
+            value=float(st.session_state["sim_closing_rate"]),
+            step=0.1,
+            format="%.1f",
+            label_visibility="visible"
+        )
+
+    with sim_c4:
+        st.number_input(
+            "Average Price ($)",
+            key="sim_avg_price",
+            value=float(st.session_state["sim_avg_price"]),
+            step=100.0,
+            format="%.0f",
+            label_visibility="visible"
+        )
+
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+def render_bottom_actions():
+    st.markdown("<div style='margin-top: 0.75rem;'></div>", unsafe_allow_html=True)
+
+    btn_left, btn_reset, btn_logout, btn_right = st.columns([5, 1, 1, 5])
+
+    with btn_reset:
+        if st.button("↺", help="Reset simulator", use_container_width=True, key="reset_simulator_btn"):
+            defaults = st.session_state.get("sim_defaults", None)
+            if defaults:
+                st.session_state["sim_arrivals"] = defaults["arrivals"]
+                st.session_state["sim_contracts"] = defaults["contracts"]
+                st.session_state["sim_closing_rate"] = defaults["closing_rate"]
+                st.session_state["sim_avg_price"] = defaults["avg_price"]
+            st.rerun()
+
+    with btn_logout:
+        if st.button("⎋", help="Logout", use_container_width=True, key="logout_btn"):
+            user = st.session_state.username
+            if user in st.session_state.active_users:
+                del st.session_state.active_users[user]
+
+            st.session_state.authenticated = False
+            st.session_state.username = None
+            st.rerun()
