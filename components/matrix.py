@@ -246,5 +246,5 @@ def render_matrix(rows, colors):
     st.components.v1.html(
         html_out,
         height=height,
-        scrolling=False
+        scrolling=True
     )
