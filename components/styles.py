@@ -49,8 +49,8 @@ def apply_styles(colors):
         .section-title {{
             font-size: 20px;
             font-weight: 800;
-            margin-top: 0.2rem;
-            margin-bottom: 0.1rem;
+            margin-top: 0rem;
+            margin-bottom: 0rem;
         }}
 
         .matrix-scroll {{
