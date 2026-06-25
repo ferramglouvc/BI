@@ -1,3 +1,6 @@
+Sí. Reemplaza `streamlit_app.py` completo por esto:
+
+```python
 import calendar
 from datetime import datetime, timedelta
 from pathlib import Path
@@ -137,6 +140,16 @@ init_simulator_context(
     }
 )
 
+if st.session_state.get("sim_reset_requested"):
+    defaults = st.session_state.get("sim_defaults", {})
+    if defaults:
+        st.session_state["sim_arrivals"] = defaults["arrivals"]
+        st.session_state["sim_contracts"] = defaults["contracts"]
+        st.session_state["sim_closing_rate"] = defaults["closing_rate"]
+        st.session_state["sim_avg_price"] = defaults["avg_price"]
+
+    st.session_state["sim_reset_requested"] = False
+
 # =====================================
 # CURRENT SIMULATOR VALUES
 # =====================================
@@ -266,3 +279,6 @@ render_simulator()
 # =====================================
 
 render_bottom_actions()
+```
+
+Si quieres, te dejo también el `components/simulator.py` final para que el reset no vuelva a dar error y quede totalmente alineado con este `streamlit_app.py`.
