@@ -257,10 +257,8 @@ render_matrix(matrix_rows, COLORS)
 # ACTUALS SIMULATOR
 # =====================================
 
-st.markdown("<div style='margin-top: -0.6rem;'></div>", unsafe_allow_html=True)
-
-sim_key_prefix = f"sim_{project_leader}_{salesroom}".replace(" ", "_")
-render_simulator(key_prefix=sim_key_prefix)
+simulator_gap = st.markdown("<div style='margin-top: -1.0rem;'></div>", unsafe_allow_html=True)
+render_simulator()
 
 # =====================================
 # BOTTOM ACTIONS
