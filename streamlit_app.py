@@ -276,6 +276,3 @@ render_simulator()
 # =====================================
 
 render_bottom_actions()
-```
-
-Si quieres, te dejo también el `components/simulator.py` final para que el reset no vuelva a dar error y quede totalmente alineado con este `streamlit_app.py`.
