@@ -11,7 +11,7 @@ def init_simulator_context(context_key, defaults):
         st.session_state["sim_context"] = context_key
 
 
-def render_simulator():
+def render_simulator(key_prefix="sim"):
     st.markdown("<div class='section-title'>Actuals Simulator</div>", unsafe_allow_html=True)
     st.markdown("<div class='simulator-wrap'>", unsafe_allow_html=True)
 
@@ -20,7 +20,7 @@ def render_simulator():
     with sim_c1:
         st.number_input(
             "Arrivals",
-            key="sim_arrivals",
+            key=f"{key_prefix}_arrivals",
             value=float(st.session_state["sim_arrivals"]),
             step=1.0,
             format="%.0f",
@@ -30,7 +30,7 @@ def render_simulator():
     with sim_c2:
         st.number_input(
             "Contracts",
-            key="sim_contracts",
+            key=f"{key_prefix}_contracts",
             value=float(st.session_state["sim_contracts"]),
             step=1.0,
             format="%.0f",
@@ -40,7 +40,7 @@ def render_simulator():
     with sim_c3:
         st.number_input(
             "Closing Rate %",
-            key="sim_closing_rate",
+            key=f"{key_prefix}_closing_rate",
             value=float(st.session_state["sim_closing_rate"]),
             step=0.1,
             format="%.1f",
@@ -50,7 +50,7 @@ def render_simulator():
     with sim_c4:
         st.number_input(
             "Average Price ($)",
-            key="sim_avg_price",
+            key=f"{key_prefix}_avg_price",
             value=float(st.session_state["sim_avg_price"]),
             step=100.0,
             format="%.0f",
