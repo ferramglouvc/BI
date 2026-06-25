@@ -77,7 +77,7 @@ def render_matrix(rows, colors):
             font-size: 13px;
             font-weight: 700;
             padding-top: 0px;
-            padding-bottom: 6px;
+            padding-bottom: 2px;
             text-align: center;
             border-bottom: 1px solid {colors["border"]};
             background: {colors["header_bg"]};
@@ -87,7 +87,7 @@ def render_matrix(rows, colors):
 
         .matrix-table tbody td {{
             padding-top: 2px;
-            padding-bottom: 5px;
+            padding-bottom: 2px;
             padding-left: 0;
             padding-right: 0;
             text-align: center;
