@@ -1,6 +1,5 @@
 import html
 import streamlit as st
-
 from utils.formatting import fmt_matrix
 
 
@@ -37,13 +36,13 @@ def render_matrix(rows, colors):
 
         .matrix-table {{
             width: 100%;
-            min-width: 820px;
-            table-layout: auto;
+            min-width: 720px;
+            table-layout: fixed;
             border-collapse: collapse;
         }}
 
         .matrix-table col.kpi-col {{
-            width: 90px;
+            width: 80px;
         }}
 
         .matrix-table col.actual-col {{
@@ -96,9 +95,9 @@ def render_matrix(rows, colors):
             background: {colors["sticky_bg"]};
             text-align: left !important;
             color: {colors["text"]};
-            width: auto;
-            min-width: 115px;
-            max-width: 115px;
+            width: 80px;
+            min-width: 80px;
+            max-width: 80px;
         }}
 
         .matrix-table thead th:first-child {{
@@ -110,20 +109,17 @@ def render_matrix(rows, colors):
             font-weight: 700;
             padding-top: 4px;
             line-height: 1.05;
-            width: auto;
-            min-width: 150px;
-            max-width: none;
-            overflow: visible;
+            width: 80px;
+            min-width: 80px;
+            max-width: 80px;
+            overflow: hidden;
             white-space: nowrap;
-            text-overflow: clip;
+            text-overflow: ellipsis;
             color: {colors["text"]};
         }}
 
         .matrix-value-card {{
-            padding-top: 0px;
-            padding-bottom: 0px;
-            padding-left: 0px;
-            padding-right: 0px;
+            padding: 0;
             min-height: auto;
             background: transparent;
             border: none;
@@ -155,7 +151,7 @@ def render_matrix(rows, colors):
 
         @media (max-width: 768px) {{
             .matrix-table {{
-                min-width: 820px;
+                min-width: 720px;
             }}
 
             .matrix-table thead th {{
@@ -163,8 +159,9 @@ def render_matrix(rows, colors):
             }}
 
             .matrix-kpi-cell {{
-                font-size: 12px;
-                min-width: 120px;
+                font-size: 11px;
+                min-width: 80px;
+                max-width: 80px;
             }}
 
             .matrix-value {{
@@ -204,7 +201,6 @@ def render_matrix(rows, colors):
     """
 
     for label, actual, projected, forecast, budget, var_vs_fcst, var_vs_budget, kind in rows:
-
         tone_fcst = "neutral"
         tone_budget = "neutral"
 
@@ -220,12 +216,7 @@ def render_matrix(rows, colors):
 
         html_out += f"""
               <tr>
-                <td>
-                  <div class="matrix-kpi-cell">
-                    {html.escape(label)}
-                  </div>
-                </td>
-
+                <td><div class="matrix-kpi-cell">{html.escape(label)}</div></td>
                 <td>{value_card(fmt_matrix(kind, actual), tone="neutral")}</td>
                 <td>{value_card(fmt_matrix(kind, projected), tone="neutral")}</td>
                 <td>{value_card(fmt_matrix(kind, forecast), tone="neutral")}</td>
