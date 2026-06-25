@@ -77,7 +77,7 @@ def render_matrix(rows, colors):
             font-size: 13px;
             font-weight: 700;
             padding-top: 0px;
-            padding-bottom: 6px;
+            padding-bottom: 3px;
             text-align: center;
             border-bottom: 1px solid {colors["border"]};
             background: {colors["header_bg"]};
@@ -86,8 +86,8 @@ def render_matrix(rows, colors):
         }}
 
         .matrix-table tbody td {{
-            padding-top: 5px;
-            padding-bottom: 5px;
+            padding-top: 2px;
+            padding-bottom: 2px;
             padding-left: 0;
             padding-right: 0;
             text-align: center;
@@ -113,9 +113,9 @@ def render_matrix(rows, colors):
         .matrix-kpi-cell {{
             font-size: 13px;
             font-weight: 700;
-            line-height: 1.20;
-            padding-top: 4px;
-            padding-bottom: 4px;
+            line-height: 1.05;
+            padding-top: 2px;
+            padding-bottom: 2px;
             width: 90px;
             min-width: 90px;
             max-width: 90px;
@@ -135,7 +135,7 @@ def render_matrix(rows, colors):
         .matrix-value {{
             font-size: 13px;
             font-weight: 700;
-            line-height: 1.20;
+            line-height: 1.05;
             text-align: center;
             color: {colors["text"]};
         }}
@@ -202,8 +202,8 @@ def render_matrix(rows, colors):
 
             <tbody>
     """
-        for label, actual, projected, forecast, budget, var_vs_fcst, var_vs_budget, kind in rows:
 
+    for label, actual, projected, forecast, budget, var_vs_fcst, var_vs_budget, kind in rows:
         tone_fcst = "neutral"
         tone_budget = "neutral"
 
