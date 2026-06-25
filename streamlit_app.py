@@ -163,7 +163,7 @@ avg_price = float(st.session_state["sim_avg_price"])
 actual_metrics = calculate_actual_kpis(arrivals, contracts, closing_rate, avg_price)
 qs = actual_metrics["Qs"]
 penetration = actual_metrics["Penetration"]
-volume = actual_metrics["Volume"]
+volume = contracts * avg_price
 vpg = actual_metrics["VPG"]
 
 # =====================================
