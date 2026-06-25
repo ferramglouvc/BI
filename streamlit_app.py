@@ -753,6 +753,41 @@ if salesroom == "ALL":
 else:
     selected_salesrooms = [salesroom]
 
+leader_names = sorted(
+    [name for name in PROJECT_LEADERS.keys() if name != "ALL"],
+    key=str.lower
+)
+
+leader_options = ["ALL"] + leader_names
+
+project_leader = st.selectbox(
+    "Select Project Leader",
+    leader_options
+)
+
+if project_leader == "ALL":
+    leader_salesrooms = sorted(
+        df["SalesRoom"].dropna().astype(str).unique().tolist(),
+        key=str.lower
+    )
+else:
+    leader_salesrooms = sorted(
+        PROJECT_LEADERS[project_leader],
+        key=str.lower
+    )
+
+salesroom_options = ["ALL"] + leader_salesrooms
+
+salesroom = st.selectbox(
+    "Select SalesRoom",
+    salesroom_options
+)
+
+if salesroom == "ALL":
+    selected_salesrooms = leader_salesrooms
+else:
+    selected_salesrooms = [salesroom]
+    
 # =====================================
 # FILTER DATA
 # =====================================
