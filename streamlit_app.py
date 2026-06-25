@@ -1,6 +1,7 @@
 import calendar
 from datetime import datetime, timedelta
 from pathlib import Path
+
 import pandas as pd
 import streamlit as st
 
@@ -8,7 +9,11 @@ from components.login import render_login, validate_session
 from components.styles import apply_styles
 from components.matrix import render_matrix
 from components.filters import render_filters
-from components.simulator import init_simulator_context, render_simulator, render_bottom_actions
+from components.simulator import (
+    init_simulator_context,
+    render_simulator,
+    render_bottom_actions,
+)
 from services.loaders import load_data, load_metric_file
 from services.aggregations import aggregate_actual_defaults, summarize_metric_subset
 from services.calculations import calculate_actual_kpis, calculate_projection
@@ -75,16 +80,7 @@ budget_df = load_metric_file(
 # HEADER
 # =====================================
 
-title_col, reset_col, logout_col = st.columns([8, 1, 1])
-
-with title_col:
-    st.title("Calculadora BI")
-
-with reset_col:
-    st.markdown("<div style='margin-top: 18px;'></div>", unsafe_allow_html=True)
-
-with logout_col:
-    st.markdown("<div style='margin-top: 18px;'></div>", unsafe_allow_html=True)
+st.title("Calculadora BI")
 
 yesterday = datetime.now() - timedelta(days=1)
 st.caption(f"Data until {yesterday.strftime('%B %d, %Y')}")
@@ -142,10 +138,8 @@ init_simulator_context(
 )
 
 # =====================================
-# SIMULATOR
+# CURRENT SIMULATOR VALUES
 # =====================================
-
-render_simulator()
 
 arrivals = float(st.session_state["sim_arrivals"])
 contracts = float(st.session_state["sim_contracts"])
@@ -262,6 +256,8 @@ render_matrix(matrix_rows, COLORS)
 # =====================================
 # ACTUALS SIMULATOR
 # =====================================
+
+st.markdown("<div style='margin-top: -0.6rem;'></div>", unsafe_allow_html=True)
 
 sim_key_prefix = f"sim_{project_leader}_{salesroom}".replace(" ", "_")
 render_simulator(key_prefix=sim_key_prefix)
