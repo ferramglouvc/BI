@@ -240,8 +240,6 @@ st.caption(
     f"Projection based on {legend_date.strftime('%B %d, %Y')} | {days_remaining} days remaining"
 )
 
-render_matrix(matrix_rows, COLORS)
-
 matrix_rows = [
     ("Arrivals", arrivals, proj_arrivals, forecast_arrivals, budget_arrivals, var_arrivals_fcst, var_arrivals_budget, "int"),
     ("Contracts", contracts, proj_contracts, forecast_contracts, budget_contracts, var_contracts_fcst, var_contracts_budget, "int"),
@@ -259,7 +257,8 @@ render_matrix(matrix_rows, COLORS)
 # ACTUALS SIMULATOR
 # =====================================
 
-simulator_gap = st.markdown("<div style='margin-top: -1.0rem;'></div>", unsafe_allow_html=True)
+st.markdown("<div style='margin-top: -1.0rem;'></div>", unsafe_allow_html=True)
+
 render_simulator()
 
 # =====================================
