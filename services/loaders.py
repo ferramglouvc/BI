@@ -1,8 +1,8 @@
-import pathlib
+from pathlib import Path
 import pandas as pd
 import streamlit as st
 
-BASE_DIR = pathlib.Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 def _clean_metric(x):
