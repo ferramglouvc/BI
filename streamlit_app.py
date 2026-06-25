@@ -2,6 +2,7 @@ import html
 import pathlib
 from datetime import datetime, timedelta
 import calendar
+import uuid
 
 import pandas as pd
 import streamlit as st
@@ -18,8 +19,6 @@ st.set_page_config(
 # =====================================
 # SIMPLE LOGIN
 # =====================================
-
-import uuid
 
 USERS = {
     "admin": "uvc2026",
@@ -50,46 +49,25 @@ if not st.session_state.authenticated:
 
     st.title("Login")
 
-    # FORM permite Enter para submit
     with st.form("login_form"):
 
         user = st.text_input("User")
-
-        pwd = st.text_input(
-            "Password",
-            type="password"
-        )
-
+        pwd = st.text_input("Password", type="password")
         submitted = st.form_submit_button("Login")
 
     if submitted:
 
         if user in USERS and pwd == USERS[user]:
 
-            # =====================================
-            # BLOCK MULTI LOGIN
-            # =====================================
-
             if user in st.session_state.active_users:
-
-                st.error(
-                    "This user is already logged in."
-                )
-
+                st.error("This user is already logged in.")
             else:
-
                 st.session_state.authenticated = True
-
                 st.session_state.username = user
-
-                st.session_state.active_users[user] = (
-                    st.session_state.session_id
-                )
-
+                st.session_state.active_users[user] = st.session_state.session_id
                 st.rerun()
 
         else:
-
             st.error("Invalid credentials")
 
     st.stop()
@@ -100,43 +78,31 @@ if not st.session_state.authenticated:
 
 if st.session_state.username:
 
-    active_id = st.session_state.active_users.get(
-        st.session_state.username
-    )
+    active_id = st.session_state.active_users.get(st.session_state.username)
 
     if active_id != st.session_state.session_id:
-
         st.session_state.authenticated = False
-
         st.session_state.username = None
-
-        st.error(
-            "Your session was replaced by another login."
-        )
-
+        st.error("Your session was replaced by another login.")
         st.stop()
 
 # =====================================
 # LOGOUT BUTTON
 # =====================================
 
-logout_col1, logout_col2 = st.columns([8,1])
+logout_col1, logout_col2 = st.columns([8, 1])
 
 with logout_col2:
-
     if st.button("Logout"):
-
         user = st.session_state.username
 
         if user in st.session_state.active_users:
-
             del st.session_state.active_users[user]
 
         st.session_state.authenticated = False
-
         st.session_state.username = None
-
         st.rerun()
+
 # =====================================
 # THEME HELPERS
 # =====================================
@@ -170,20 +136,17 @@ st.markdown(
         padding-bottom: 1rem;
     }}
 
-    /* INPUT EDITABLE */
     div[data-baseweb="input"] input {{
         font-size: 16px!important;
         font-weight: 400 !important;
     }}
 
-    /* BOTONES + / - */
     button[data-testid="stNumberInputStepUp"],
     button[data-testid="stNumberInputStepDown"] {{
         height: 32px !important;
         width: 32px !important;
     }}
 
-    /* LABEL DEL INPUT */
     label[data-testid="stWidgetLabel"] p {{
         font-size: 20px !important;
         font-weight: 700 !important;
@@ -218,7 +181,6 @@ st.markdown(
         white-space: nowrap;
         background: {COLORS["header_bg"]};
         color: {COLORS["text"]};
-
     }}
 
     .matrix-table thead th:first-child,
@@ -235,9 +197,9 @@ st.markdown(
     }}
 
     .matrix-table thead th:first-child {{
-    width: 70px;
-    min-width: 70px;
-    max-width: 70px;
+        width: 70px;
+        min-width: 70px;
+        max-width: 70px;
         z-index: 4;
     }}
 
@@ -335,13 +297,13 @@ def load_data():
     return df
 
 # =====================================
-# LOAD FORECAST DATA
+# LOAD METRIC FILES
 # =====================================
 
 @st.cache_data
-def load_forecast():
+def load_metric_file(filename):
     df = pd.read_csv(
-        BASE_DIR / "data" / "May_Forecast.csv",
+        BASE_DIR / "data" / filename,
         header=None,
         names=["SalesRoom", "Metric", "Value"],
         encoding="latin1"
@@ -381,7 +343,8 @@ def load_forecast():
 # =====================================
 
 df = load_data()
-forecast_df = load_forecast()
+forecast_df = load_metric_file("May_Forecast.csv")
+budget_df = load_metric_file("June_Budget.csv")
 
 # =====================================
 # TITLE / LEGEND
@@ -403,6 +366,7 @@ salesroom = st.selectbox(
 
 filtered = df[df["SalesRoom"] == salesroom]
 forecast_filtered = forecast_df[forecast_df["SalesRoom"] == salesroom]
+budget_filtered = budget_df[budget_df["SalesRoom"] == salesroom]
 
 if filtered.empty:
     st.warning("No actual data found")
@@ -412,8 +376,13 @@ if forecast_filtered.empty:
     st.warning("No forecast data found")
     st.stop()
 
+if budget_filtered.empty:
+    st.warning("No budget data found")
+    st.stop()
+
 row = filtered.iloc[0]
 forecast_row = forecast_filtered.iloc[0]
+budget_row = budget_filtered.iloc[0]
 
 # =====================================
 # HELPERS
@@ -448,11 +417,8 @@ def render_matrix(rows):
 
     html_out = f"""
     <html>
-
     <head>
-
       <style>
-
         body {{
           margin: 0;
           padding: 0;
@@ -473,20 +439,12 @@ def render_matrix(rows):
             -webkit-overflow-scrolling: touch;
         }}
 
-        /* ====================================================
-           TABLE
-        ==================================================== */
-
         .matrix-table {{
             width: 100%;
-            min-width: 620px;
+            min-width: 720px;
             table-layout: auto;
             border-collapse: collapse;
         }}
-
-        /* ====================================================
-           COLUMN WIDTHS
-        ==================================================== */
 
         .matrix-table col.kpi-col {{
             width: 90px;
@@ -504,66 +462,44 @@ def render_matrix(rows):
             width: 95px;
         }}
 
+        .matrix-table col.budget-col {{
+            width: 95px;
+        }}
+
         .matrix-table col.variance-col {{
             width: 95px;
         }}
 
-        /* ====================================================
-           HEADERS
-        ==================================================== */
-
         .matrix-table thead th {{
-
             font-size: 13px;
             font-weight: 700;
-
             padding-top: 0px;
             padding-bottom: 4px;
             padding-left: 0px;
             padding-right: 0px;
-
             text-align: center;
-
             border-bottom: 1px solid {COLORS["border"]};
-
             white-space: nowrap;
-
             background: {COLORS["header_bg"]};
             color: {COLORS["text"]};
         }}
-
-        /* ====================================================
-           CELLS
-        ==================================================== */
 
         .matrix-table tbody td {{
             padding-top: 1px;
             padding-bottom: 1px;
             padding-left: 0px;
             padding-right: 0px;
-
             text-align: center;
         }}
 
-        /* ====================================================
-           STICKY KPI COLUMN
-        ==================================================== */
-
         .matrix-table thead th:first-child,
         .matrix-table tbody td:first-child {{
-
             position: sticky;
-
             left: 0;
-
             z-index: 3;
-
             background: {COLORS["sticky_bg"]};
-
             text-align: left !important;
-
             color: {COLORS["text"]};
-
             width: auto;
             min-width: 115px;
             max-width: 115px;
@@ -573,81 +509,41 @@ def render_matrix(rows):
             z-index: 4;
         }}
 
-        /* ====================================================
-           KPI LABEL
-        ==================================================== */
-
         .matrix-kpi-cell {{
-
             font-size: 13px;
-
             font-weight: 700;
-
             padding-top: 4px;
-
             line-height: 1.05;
-
             width: auto;
-
             min-width: 150px;
-
             max-width: none;
-
             overflow: visible;
-
             white-space: nowrap;
-
             text-overflow: clip;
-
             color: {COLORS["text"]};
         }}
 
-        /* ====================================================
-           VALUE CONTAINER
-        ==================================================== */
-
         .matrix-value-card {{
-
             padding-top: 0px;
             padding-bottom: 0px;
             padding-left: 0px;
             padding-right: 0px;
-
             min-height: auto;
-
             background: transparent;
-
             border: none;
-
             display: flex;
-
             align-items: center;
-
             justify-content: center;
         }}
 
-        /* ====================================================
-           VALUES
-        ==================================================== */
-
         .matrix-value {{
-
             font-size: 14px;
-
             font-weight: 700;
-
             line-height: 1.05;
-
             word-break: break-word;
-
             color: {COLORS["text"]};
-
             text-align: center;
         }}
-
-        /* ====================================================
-           COLORS
-        ==================================================== */
 
         .matrix-value.positive {{
             color: {COLORS["positive"]};
@@ -661,14 +557,9 @@ def render_matrix(rows):
             color: {COLORS["text"]};
         }}
 
-        /* ====================================================
-           MOBILE
-        ==================================================== */
-
         @media (max-width: 768px) {{
-
             .matrix-table {{
-                min-width: 560px;
+                min-width: 620px;
             }}
 
             .matrix-table thead th {{
@@ -677,7 +568,6 @@ def render_matrix(rows):
 
             .matrix-kpi-cell {{
                 font-size: 12px;
-
                 min-width: 120px;
             }}
 
@@ -685,67 +575,47 @@ def render_matrix(rows):
                 font-size: 12px;
             }}
         }}
-
       </style>
-
     </head>
 
     <body>
-
       <div class="matrix-shell">
-
         <div class="matrix-scroll">
-
           <table class="matrix-table">
-
             <colgroup>
-
               <col class="kpi-col">
-
               <col class="actual-col">
-
               <col class="projected-col">
-
               <col class="forecast-col">
-
+              <col class="budget-col">
               <col class="variance-col">
-
             </colgroup>
 
             <thead>
-
               <tr>
-
                 <th style="text-align:left;">KPI</th>
-
                 <th>Actuals</th>
-
                 <th>Projected</th>
-
                 <th>Forecast</th>
-
+                <th>Budget</th>
                 <th>Variance</th>
-
               </tr>
-
             </thead>
 
             <tbody>
     """
 
-    for label, actual, projected, forecast, variance, kind in rows:
+    for label, actual, projected, forecast, budget, variance, kind in rows:
 
         tone = "neutral"
 
         if variance > 0:
             tone = "positive"
-
         elif variance < 0:
             tone = "negative"
 
         html_out += f"""
               <tr>
-
                 <td>
                   <div class="matrix-kpi-cell">
                     {html.escape(label)}
@@ -765,23 +635,21 @@ def render_matrix(rows):
                 </td>
 
                 <td>
-                  {value_card(fmt_matrix(kind, variance, variance=True), tone=tone)}
+                  {value_card(fmt_matrix(kind, budget), tone="neutral")}
                 </td>
 
+                <td>
+                  {value_card(fmt_matrix(kind, variance, variance=True), tone=tone)}
+                </td>
               </tr>
         """
 
     html_out += """
             </tbody>
-
           </table>
-
         </div>
-
       </div>
-
     </body>
-
     </html>
     """
 
@@ -792,7 +660,7 @@ def render_matrix(rows):
         height=height,
         scrolling=True
     )
-    
+
 # =====================================
 # ACTUAL INPUTS
 # =====================================
@@ -888,17 +756,38 @@ forecast_vpg = float(forecast_row.get("VPG", 0))
 forecast_volume = float(forecast_row.get("Volume", 0))
 
 # =====================================
-# VARIANCES
+# BUDGET TARGETS
 # =====================================
 
-var_arrivals = proj_arrivals - forecast_arrivals
-var_contracts = proj_contracts - forecast_contracts
-var_qs = proj_qs - forecast_qs
-var_volume = proj_volume - forecast_volume
-var_penetration_pp = proj_penetration - forecast_penetration
-var_closing_pp = proj_closing_rate - forecast_closing_rate
-var_vpg = proj_vpg - forecast_vpg
-var_avg_price = proj_avg_price - forecast_avg_price
+budget_arrivals = float(budget_row.get("Arrivals", 0))
+
+budget_penetration = float(budget_row.get("Penetration", 0))
+if budget_penetration <= 1:
+    budget_penetration *= 100
+
+budget_qs = float(budget_row.get("Qs", 0))
+budget_contracts = float(budget_row.get("Contracts", 0))
+budget_avg_price = float(budget_row.get("Average Price", 0))
+
+budget_closing_rate = float(budget_row.get("Closing Rate", 0))
+if budget_closing_rate <= 1:
+    budget_closing_rate *= 100
+
+budget_vpg = float(budget_row.get("VPG", 0))
+budget_volume = float(budget_row.get("Volume", 0))
+
+# =====================================
+# VARIANCES VS BUDGET
+# =====================================
+
+var_arrivals = proj_arrivals - budget_arrivals
+var_contracts = proj_contracts - budget_contracts
+var_qs = proj_qs - budget_qs
+var_volume = proj_volume - budget_volume
+var_penetration_pp = proj_penetration - budget_penetration
+var_closing_pp = proj_closing_rate - budget_closing_rate
+var_vpg = proj_vpg - budget_vpg
+var_avg_price = proj_avg_price - budget_avg_price
 
 # =====================================
 # MATRIX
@@ -910,14 +799,14 @@ st.caption(
 )
 
 matrix_rows = [
-    ("Arrivals", arrivals, proj_arrivals, forecast_arrivals, var_arrivals, "int"),
-    ("Contracts", contracts, proj_contracts, forecast_contracts, var_contracts, "int"),
-    ("Closing Rate", closing_rate, proj_closing_rate, forecast_closing_rate, var_closing_pp, "pct"),
-    ("Average Price", avg_price, proj_avg_price, forecast_avg_price, var_avg_price, "money"),
-    ("Qs", qs, proj_qs, forecast_qs, var_qs, "int"),
-    ("Penetration", penetration, proj_penetration, forecast_penetration, var_penetration_pp, "pct"),
-    ("VPG", vpg, proj_vpg, forecast_vpg, var_vpg, "money"),
-    ("Volume", volume, proj_volume, forecast_volume, var_volume, "money"),
+    ("Arrivals", arrivals, proj_arrivals, forecast_arrivals, budget_arrivals, var_arrivals, "int"),
+    ("Contracts", contracts, proj_contracts, forecast_contracts, budget_contracts, var_contracts, "int"),
+    ("Closing Rate", closing_rate, proj_closing_rate, forecast_closing_rate, budget_closing_rate, var_closing_pp, "pct"),
+    ("Average Price", avg_price, proj_avg_price, forecast_avg_price, budget_avg_price, var_avg_price, "money"),
+    ("Qs", qs, proj_qs, forecast_qs, budget_qs, var_qs, "int"),
+    ("Penetration", penetration, proj_penetration, forecast_penetration, budget_penetration, var_penetration_pp, "pct"),
+    ("VPG", vpg, proj_vpg, forecast_vpg, budget_vpg, var_vpg, "money"),
+    ("Volume", volume, proj_volume, forecast_volume, budget_volume, var_volume, "money"),
 ]
 
 render_matrix(matrix_rows)
