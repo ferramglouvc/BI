@@ -1,0 +1,17 @@
+PROJECT_LEADERS = {
+    "ALL": [],
+    "Angel Marin": ["SUDLR", "SECCC", "SERPC"],
+    "Alain Chalut": ["DRMZT"],
+    "Chad Knowles": ["ZOMSL", "SEWMB", "SMBSL", "SEAUA"],
+    "Claudio Balderrama": ["SUDIX"],
+    "Cristina Ortiz": ["DRBMI", "SEBMI"],
+    "Florin Ignat": ["DRJRC", "SEMRC", "DRENA", "SEPDC", "BRERG"],
+    "Gabriel Prado": ["SETPC", "DRMPC", "DRFPC", "BREPC", "DRCTG", "DRECC", "DROPC", "DREPE", "DRELR", "PUJIF"],
+    "Guillermo Mejia": ["DDPBP"],
+    "Ivan Brambila": ["DRVPV", "SEVPV", "SUNPV"],
+    "Juan Manuel Marquez": ["PVRIF"],
+    "Ladislao Oquendo": ["SECHU", "DREHU"],
+    "Ricardo Arriola": ["BRCSL", "DRELC", "SEPLC", "ZOCDM"],
+    "Rodolfo Osoyo": ["SEARM", "DRETU", "DRCZM"],
+    "Victor Camarillo": ["DREPM", "SEPBC", "SEVCU", "NOECU", "DREVC", "BRECU", "CANIF", "SEIIM"],
+}
