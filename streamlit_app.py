@@ -262,10 +262,8 @@ matrix_rows = [
 ]
 
 # DEBUG (temporal)
-st.write(f"Número de filas: {len(matrix_rows)}")
 st.write([r[0] for r in matrix_rows])
 
-render_matrix(matrix_rows, COLORS)
 render_matrix(matrix_rows, COLORS)
 
 # =====================================
