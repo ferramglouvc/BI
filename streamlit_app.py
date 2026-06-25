@@ -1,6 +1,3 @@
-Sí. Reemplaza `streamlit_app.py` completo por esto:
-
-```python
 import calendar
 from datetime import datetime, timedelta
 from pathlib import Path
