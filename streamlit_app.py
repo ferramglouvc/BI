@@ -8,7 +8,7 @@ import pandas as pd
 from components.styles import apply_styles
 from components.matrix import render_matrix
 from services.loaders import load_data, load_metric_file
-from services.aggregations import aggregate_actual_defaults
+from services.aggregations import aggregate_actual_defaults, aggregate_metric_defaults
 from services.project_leaders import PROJECT_LEADERS
 
 # =====================================
@@ -33,6 +33,34 @@ COLORS = {
 }
 
 apply_styles(COLORS)
+
+st.markdown(
+    """
+    <style>
+    div[data-testid="stNumberInputContainer"] {
+        max-width: 150px;
+    }
+
+    div[data-testid="stNumberInput"] input {
+        padding-top: 0.25rem !important;
+        padding-bottom: 0.25rem !important;
+        font-size: 14px !important;
+    }
+
+    div[data-testid="stButton"] button {
+        min-height: 2.2rem;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+        font-size: 0.9rem;
+    }
+
+    .simulator-wrap {
+        padding-top: 0.25rem;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
 # =====================================
 # SIMPLE LOGIN
@@ -130,29 +158,24 @@ with title_col:
     st.title("Calculadora BI")
 
 with reset_col:
-    st.markdown(
-        "<div style='margin-top: 18px;'></div>",
-        unsafe_allow_html=True
-    )
+    st.markdown("<div style='margin-top: 18px;'></div>", unsafe_allow_html=True)
 
-    if st.button(
-        "↺",
-        help="Reset simulator",
-        use_container_width=True
-    ):
+    if st.button("↺", help="Reset simulator", use_container_width=True):
+        if "sim_context" in st.session_state:
+            context_key = st.session_state["sim_context"]
+            defaults = st.session_state.get("sim_defaults", {})
+            if defaults:
+                st.session_state["sim_arrivals"] = defaults["arrivals"]
+                st.session_state["sim_contracts"] = defaults["contracts"]
+                st.session_state["sim_closing_rate"] = defaults["closing_rate"]
+                st.session_state["sim_avg_price"] = defaults["avg_price"]
+                st.session_state["sim_context"] = context_key
         st.rerun()
 
 with logout_col:
-    st.markdown(
-        "<div style='margin-top: 18px;'></div>",
-        unsafe_allow_html=True
-    )
+    st.markdown("<div style='margin-top: 18px;'></div>", unsafe_allow_html=True)
 
-    if st.button(
-        "⎋",
-        help="Logout",
-        use_container_width=True
-    ):
+    if st.button("⎋", help="Logout", use_container_width=True):
         user = st.session_state.username
 
         if user in st.session_state.active_users:
@@ -160,7 +183,6 @@ with logout_col:
 
         st.session_state.authenticated = False
         st.session_state.username = None
-
         st.rerun()
 
 yesterday = datetime.now() - timedelta(days=1)
@@ -186,8 +208,18 @@ def input_card(title, value, step, fmt="%d"):
             value=value,
             step=step,
             format=fmt,
-            label_visibility="collapsed"
+            label_visibility="collapsed",
+            key=f"sim_{title.lower().replace(' ', '_').replace('(', '').replace(')', '').replace('$', 'usd').replace('%', 'pct')}"
         )
+
+def init_simulator_defaults(defaults, context_key):
+    if st.session_state.get("sim_context") != context_key:
+        st.session_state["sim_defaults"] = defaults
+        st.session_state["sim_arrivals"] = defaults["arrivals"]
+        st.session_state["sim_contracts"] = defaults["contracts"]
+        st.session_state["sim_closing_rate"] = defaults["closing_rate"]
+        st.session_state["sim_avg_price"] = defaults["avg_price"]
+        st.session_state["sim_context"] = context_key
 
 def summarize_metric_subset(subset: pd.DataFrame):
     totals = {
@@ -307,40 +339,40 @@ if budget_filtered.empty:
     st.warning("No budget data found")
     st.stop()
 
+# =====================================
+# ACTUAL BASE DEFAULTS
+# =====================================
+
 if salesroom == "ALL":
-    actual_arrivals, actual_contracts, actual_closing_rate, actual_avg_price = aggregate_actual_defaults(filtered)
+    actual_arrivals_default, actual_contracts_default, actual_closing_rate_default, actual_avg_price_default = aggregate_actual_defaults(filtered)
 else:
     row = filtered.iloc[0]
-    actual_arrivals = int(round(float(row["Arrivals"])))
-    actual_contracts = int(round(float(row["Contracts Processable"])))
-    actual_closing_rate = float(row["Closing Rate"]) * 100 if float(row["Closing Rate"]) <= 1 else float(row["Closing Rate"])
-    actual_avg_price = int(round(float(row["Average Price"])))
+    actual_arrivals_default = safe_float(row.get("Arrivals"))
+    actual_contracts_default = safe_float(row.get("Contracts Processable"))
+    actual_closing_rate_default = safe_float(row.get("Closing Rate"))
+    if actual_closing_rate_default <= 1:
+        actual_closing_rate_default *= 100
+    actual_avg_price_default = safe_float(row.get("Average Price"))
 
-forecast_summary = summarize_metric_subset(forecast_filtered)
-budget_summary = summarize_metric_subset(budget_filtered)
+context_key = f"{project_leader}::{salesroom}"
+init_simulator_defaults(
+    {
+        "arrivals": float(actual_arrivals_default),
+        "contracts": float(actual_contracts_default),
+        "closing_rate": float(actual_closing_rate_default),
+        "avg_price": float(actual_avg_price_default),
+    },
+    context_key
+)
 
 # =====================================
-# ACTUAL INPUTS
+# CURRENT SIMULATOR VALUES
 # =====================================
 
-st.markdown("<div class='section-title'>Actuals KPIs</div>", unsafe_allow_html=True)
-
-if salesroom == "ALL":
-    st.caption(f"Consolidated view for {project_leader} | {len(selected_salesrooms)} salesrooms")
-
-i1, i2, i3, i4 = st.columns(4, gap="small")
-
-with i1:
-    arrivals = input_card("Arrivals", int(round(float(actual_arrivals))), step=1, fmt="%d")
-
-with i2:
-    contracts = input_card("Contracts", int(round(float(actual_contracts))), step=1, fmt="%d")
-
-with i3:
-    closing_rate = input_card("Closing Rate %", float(actual_closing_rate), step=0.1, fmt="%.1f")
-
-with i4:
-    avg_price = input_card("Average Price ($)", int(round(float(actual_avg_price))), step=100, fmt="%d")
+arrivals = safe_float(st.session_state.get("sim_arrivals", actual_arrivals_default))
+contracts = safe_float(st.session_state.get("sim_contracts", actual_contracts_default))
+closing_rate = safe_float(st.session_state.get("sim_closing_rate", actual_closing_rate_default))
+avg_price = safe_float(st.session_state.get("sim_avg_price", actual_avg_price_default))
 
 # =====================================
 # ACTUAL CALCULATIONS
@@ -376,8 +408,11 @@ proj_vpg = (proj_volume / proj_qs) if proj_qs else 0
 proj_avg_price = (proj_volume / proj_contracts) if proj_contracts else 0
 
 # =====================================
-# FORECAST TARGETS
+# FORECAST / BUDGET TARGETS
 # =====================================
+
+forecast_summary = summarize_metric_subset(forecast_filtered)
+budget_summary = summarize_metric_subset(budget_filtered)
 
 forecast_arrivals = forecast_summary["Arrivals"]
 forecast_penetration = forecast_summary["Penetration"]
@@ -387,10 +422,6 @@ forecast_avg_price = forecast_summary["Average Price"]
 forecast_closing_rate = forecast_summary["Closing Rate"]
 forecast_vpg = forecast_summary["VPG"]
 forecast_volume = forecast_summary["Volume"]
-
-# =====================================
-# BUDGET TARGETS
-# =====================================
 
 budget_arrivals = budget_summary["Arrivals"]
 budget_penetration = budget_summary["Penetration"]
@@ -424,7 +455,7 @@ var_vpg_budget = proj_vpg - budget_vpg
 var_avg_price_budget = proj_avg_price - budget_avg_price
 
 # =====================================
-# MATRIX
+# TITLE / FILTERS / MATRIX
 # =====================================
 
 st.markdown("<div class='section-title'>KPI Matrix</div>", unsafe_allow_html=True)
@@ -444,3 +475,83 @@ matrix_rows = [
 ]
 
 render_matrix(matrix_rows, COLORS)
+
+# =====================================
+# ACTUALS SIMULATOR
+# =====================================
+
+st.markdown("<div class='section-title'>Actuals Simulator</div>", unsafe_allow_html=True)
+st.markdown("<div class='simulator-wrap'>", unsafe_allow_html=True)
+
+sim_c1, sim_c2, sim_c3, sim_c4 = st.columns(4, gap="small")
+
+with sim_c1:
+    st.number_input(
+        "Arrivals",
+        key="sim_arrivals",
+        value=float(st.session_state["sim_arrivals"]),
+        step=1.0,
+        format="%.0f",
+        label_visibility="visible"
+    )
+
+with sim_c2:
+    st.number_input(
+        "Contracts",
+        key="sim_contracts",
+        value=float(st.session_state["sim_contracts"]),
+        step=1.0,
+        format="%.0f",
+        label_visibility="visible"
+    )
+
+with sim_c3:
+    st.number_input(
+        "Closing Rate %",
+        key="sim_closing_rate",
+        value=float(st.session_state["sim_closing_rate"]),
+        step=0.1,
+        format="%.1f",
+        label_visibility="visible"
+    )
+
+with sim_c4:
+    st.number_input(
+        "Average Price ($)",
+        key="sim_avg_price",
+        value=float(st.session_state["sim_avg_price"]),
+        step=100.0,
+        format="%.0f",
+        label_visibility="visible"
+    )
+
+st.markdown("</div>", unsafe_allow_html=True)
+
+# =====================================
+# BOTTOM ACTIONS
+# =====================================
+
+st.markdown("<div style='margin-top: 0.75rem;'></div>", unsafe_allow_html=True)
+
+btn_left, btn_reset, btn_logout, btn_right = st.columns([5, 1, 1, 5])
+
+with btn_reset:
+    if st.button("↺", help="Reset simulator", use_container_width=True):
+        defaults = st.session_state.get("sim_defaults", None)
+        if defaults:
+            st.session_state["sim_arrivals"] = defaults["arrivals"]
+            st.session_state["sim_contracts"] = defaults["contracts"]
+            st.session_state["sim_closing_rate"] = defaults["closing_rate"]
+            st.session_state["sim_avg_price"] = defaults["avg_price"]
+        st.rerun()
+
+with btn_logout:
+    if st.button("⎋", help="Logout", use_container_width=True):
+        user = st.session_state.username
+
+        if user in st.session_state.active_users:
+            del st.session_state.active_users[user]
+
+        st.session_state.authenticated = False
+        st.session_state.username = None
+        st.rerun()
