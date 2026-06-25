@@ -124,17 +124,16 @@ budget_df = load_metric_file(
 # TITLE
 # =====================================
 
-# =====================================
-# TITLE
-# =====================================
-
 title_col, reset_col, logout_col = st.columns([8, 1, 1])
 
 with title_col:
     st.title("Calculadora BI")
 
 with reset_col:
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown(
+        "<div style='margin-top: 18px;'></div>",
+        unsafe_allow_html=True
+    )
 
     if st.button(
         "↺",
@@ -144,14 +143,16 @@ with reset_col:
         st.rerun()
 
 with logout_col:
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown(
+        "<div style='margin-top: 18px;'></div>",
+        unsafe_allow_html=True
+    )
 
     if st.button(
         "⎋",
         help="Logout",
         use_container_width=True
     ):
-
         user = st.session_state.username
 
         if user in st.session_state.active_users:
