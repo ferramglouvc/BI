@@ -263,7 +263,8 @@ render_matrix(matrix_rows, COLORS)
 # ACTUALS SIMULATOR
 # =====================================
 
-render_simulator()
+sim_key_prefix = f"sim_{project_leader}_{salesroom}".replace(" ", "_")
+render_simulator(key_prefix=sim_key_prefix)
 
 # =====================================
 # BOTTOM ACTIONS
