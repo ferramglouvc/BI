@@ -11,6 +11,10 @@ def init_simulator_context(context_key, defaults):
         st.session_state["sim_context"] = context_key
 
 
+def request_simulator_reset():
+    st.session_state["sim_reset_requested"] = True
+
+
 def render_simulator():
     st.markdown("<div class='section-title'>Actuals Simulator</div>", unsafe_allow_html=True)
     st.markdown("<div class='simulator-wrap'>", unsafe_allow_html=True)
@@ -66,14 +70,13 @@ def render_bottom_actions():
     btn_left, btn_reset, btn_logout, btn_right = st.columns([5, 1, 1, 5])
 
     with btn_reset:
-        if st.button("↺", help="Reset simulator", use_container_width=True, key="reset_simulator_btn"):
-            defaults = st.session_state.get("sim_defaults", None)
-            if defaults:
-                st.session_state["sim_arrivals"] = defaults["arrivals"]
-                st.session_state["sim_contracts"] = defaults["contracts"]
-                st.session_state["sim_closing_rate"] = defaults["closing_rate"]
-                st.session_state["sim_avg_price"] = defaults["avg_price"]
-            st.rerun()
+        st.button(
+            "↺",
+            help="Reset simulator",
+            use_container_width=True,
+            key="reset_simulator_btn",
+            on_click=request_simulator_reset,
+        )
 
     with btn_logout:
         if st.button("⎋", help="Logout", use_container_width=True, key="logout_btn"):
