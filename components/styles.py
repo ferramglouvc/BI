@@ -46,16 +46,16 @@ def apply_styles(colors):
             font-weight: 700 !important;
         }}
 
-        .section-title {
-    font-size: 20px;
+        .section-title {{
+         font-size: 20px;
     font-weight: 800;
     margin-top: 0rem;
     margin-bottom: 0rem;
-}
+}}
 
-.simulator-wrap {
+.simulator-wrap {{
     padding-top: 0rem;
-}
+}}
 
         .matrix-scroll {{
             width: 100%;
