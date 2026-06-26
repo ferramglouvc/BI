@@ -89,21 +89,6 @@ budget_upg = load_metric_file(
     (DATA_DIR / "budget_upgrades.csv").stat().st_mtime,
 )
 
-if sales_view == "New Sales":
-    df = actual_all[actual_all["Sales Type"].astype(str).str.strip().str.upper() == "N"].copy()
-    forecast_df = forecast_new
-    budget_df = budget_new
-
-elif sales_view == "Upgrades":
-    df = actual_all[actual_all["Sales Type"].astype(str).str.strip().str.upper() == "U"].copy()
-    forecast_df = forecast_upg
-    budget_df = budget_upg
-
-else:
-    df = actual_all.copy()
-    forecast_df = pd.concat([forecast_new, forecast_upg], ignore_index=True)
-    budget_df = pd.concat([budget_new, budget_upg], ignore_index=True)
-
 # =====================================
 # HEADER
 # =====================================
@@ -138,8 +123,39 @@ st.caption(f"Data until {yesterday.strftime('%B %d, %Y')}")
 # FILTERS
 # =====================================
 
-project_leader, salesroom, selected_salesrooms = render_filters(df, PROJECT_LEADERS)
+project_leader, salesroom, selected_salesrooms = render_filters(actual_all, PROJECT_LEADERS)
 
+sales_view = st.segmented_control(
+    "Sales View",
+    ["New Sales", "Upgrades", "Cost Basis"],
+    default="Cost Basis"
+)
+
+if sales_view == "New Sales":
+    df = actual_all[
+        (actual_all["SalesRoom"].isin(selected_salesrooms)) &
+        (actual_all["Sales Type"].astype(str).str.strip().str.upper() == "N")
+    ].copy()
+
+    forecast_df = forecast_new
+    budget_df = budget_new
+
+elif sales_view == "Upgrades":
+    df = actual_all[
+        (actual_all["SalesRoom"].isin(selected_salesrooms)) &
+        (actual_all["Sales Type"].astype(str).str.strip().str.upper() == "U")
+    ].copy()
+
+    forecast_df = forecast_upg
+    budget_df = budget_upg
+
+else:
+    df = actual_all[
+        actual_all["SalesRoom"].isin(selected_salesrooms)
+    ].copy()
+
+    forecast_df = pd.concat([forecast_new, forecast_upg], ignore_index=True)
+    budget_df = pd.concat([budget_new, budget_upg], ignore_index=True)
 # =====================================
 # FILTER DATA
 # =====================================
@@ -164,7 +180,7 @@ if budget_filtered.empty:
 # ACTUAL DEFAULTS
 # =====================================
 
-if salesroom == "ALL":
+if sales_view == "Cost Basis" or len(filtered) > 1:
     actual_arrivals_default, actual_contracts_default, actual_closing_rate_default, actual_avg_price_default = aggregate_actual_defaults(filtered)
 else:
     row = filtered.iloc[0]
