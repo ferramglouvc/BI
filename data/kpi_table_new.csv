@@ -1,4 +1,4 @@
-[SalesRoom],[Contract Type],[Average Price],[Closing Rate],[Arrivals],[Contracts Processable],
+[SalesRoom],[Sales Type],[Average Price],[Closing Rate],[Arrivals],[Contracts Processable],
 BRCSL,N,32912.5,0.148148148,349.0322581,4
 BRCSL,U,19640,0.5,29.03225806,5
 BRECU,N,14927.92063,0.093023256,1050.322581,16
