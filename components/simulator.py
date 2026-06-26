@@ -67,15 +67,16 @@ def render_simulator():
 
 
 def render_bottom_actions():
-    st.markdown("<div style='margin-top: 0.2rem;'></div>", unsafe_allow_html=True)
 
-    btn_left, btn_reset, btn_right = st.columns([5, 2, 5])
+    st.markdown("<div style='margin-top:0.3rem;'></div>", unsafe_allow_html=True)
 
-    with btn_reset:
+    left, center, right = st.columns([5, 2, 5])
+
+    with center:
+
         st.button(
-            "↺ Reset",
+            "↺",
             help="Reset simulator",
-            use_container_width=True,
             key="reset_simulator_btn",
             on_click=request_simulator_reset,
         )
