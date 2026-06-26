@@ -55,6 +55,16 @@ render_login(USERS)
 validate_session()
 
 # =====================================
+# SALES VIEW
+# =====================================
+
+sales_view = st.segmented_control(
+    "Sales View",
+    ["New Sales", "Upgrades", "Cost Basis"],
+    default="Cost Basis"
+)
+
+# =====================================
 # DATA
 # =====================================
 
