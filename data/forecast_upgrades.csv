@@ -1,1 +1,577 @@
+BRECU,Arrivals,1580
+BRECU,% Penetración,13.4%
+BRECU,Q's,211
+BRECU,Contracts,29
+BRECU,Average Price,18359
+BRECU,Closing Rate,13.7%
+BRECU,VPG,2523
+BRECU,Volume,532419
+BRERC,Arrivals,1780
+BRERC,% Penetración,13.5%
+BRERC,Q's,241
+BRERC,Contracts,50
+BRERC,Average Price,22740
+BRERC,Closing Rate,20.7%
+BRERC,VPG,4718
+BRERC,Volume,1137015
+DRCZM,Arrivals,482
+DRCZM,% Penetración,14.3%
+DRCZM,Q's,69
+DRCZM,Contracts,9
+DRCZM,Average Price,17226
+DRCZM,Closing Rate,13.0%
+DRCZM,VPG,2247
+DRCZM,Volume,155030
+DRENA,Arrivals,1594
+DRENA,% Penetración,14.7%
+DRENA,Q's,234
+DRENA,Contracts,42
+DRENA,Average Price,25718
+DRENA,Closing Rate,17.9%
+DRENA,VPG,4616
+DRENA,Volume,1080146
+DREPA,Arrivals,820
+DREPA,% Penetración,9.8%
+DREPA,Q's,80
+DREPA,Contracts,15
+DREPA,Average Price,20038
+DREPA,Closing Rate,18.8%
+DREPA,VPG,3757
+DREPA,Volume,300564
+DREPM,Arrivals,1245
+DREPM,% Penetración,15.8%
+DREPM,Q's,197
+DREPM,Contracts,35
+DREPM,Average Price,25653
+DREPM,Closing Rate,17.8%
+DREPM,VPG,4558
+DREPM,Volume,897840
+DRERC,Arrivals,1338
+DRERC,% Penetración,13.0%
+DRERC,Q's,174
+DRERC,Contracts,31
+DRERC,Average Price,17581
+DRERC,Closing Rate,17.8%
+DRERC,VPG,3132
+DRERC,Volume,545002
+DRESC,Arrivals,1732
+DRESC,% Penetración,14.4%
+DRESC,Q's,250
+DRESC,Contracts,44
+DRESC,Average Price,13030
+DRESC,Closing Rate,17.6%
+DRESC,VPG,2293
+DRESC,Volume,573307
+DRETU,Arrivals,743
+DRETU,% Penetración,16.7%
+DRETU,Q's,124
+DRETU,Contracts,22
+DRETU,Average Price,15923
+DRETU,Closing Rate,17.7%
+DRETU,VPG,2825
+DRETU,Volume,350310
+DREVC,Arrivals,1109
+DREVC,% Penetración,16.8%
+DREVC,Q's,186
+DREVC,Contracts,37
+DREVC,Average Price,15570
+DREVC,Closing Rate,19.9%
+DREVC,VPG,3097
+DREVC,Volume,576107
+DRJRC,Arrivals,903
+DRJRC,% Penetración,14.4%
+DRJRC,Q's,130
+DRJRC,Contracts,19
+DRJRC,Average Price,17573
+DRJRC,Closing Rate,14.6%
+DRJRC,VPG,2568
+DRJRC,Volume,333880
+DRSRC,Arrivals,1357
+DRSRC,% Penetración,9.7%
+DRSRC,Q's,132
+DRSRC,Contracts,19
+DRSRC,Average Price,15125
+DRSRC,Closing Rate,14.4%
+DRSRC,VPG,2177
+DRSRC,Volume,287372
+HYVGI,Arrivals,1001
+HYVGI,% Penetración,9.4%
+HYVGI,Q's,94
+HYVGI,Contracts,14
+HYVGI,Average Price,13316
+HYVGI,Closing Rate,14.9%
+HYVGI,VPG,1983
+HYVGI,Volume,186430
+SEACZ,Arrivals,740
+SEACZ,% Penetración,17.4%
+SEACZ,Q's,129
+SEACZ,Contracts,26
+SEACZ,Average Price,16864
+SEACZ,Closing Rate,20.2%
+SEACZ,VPG,3399
+SEACZ,Volume,438459
+SEARM,Arrivals,1775
+SEARM,% Penetración,13.2%
+SEARM,Q's,234
+SEARM,Contracts,60
+SEARM,Average Price,34511
+SEARM,Closing Rate,25.6%
+SEARM,VPG,8849
+SEARM,Volume,2070669
+SECPM,Arrivals,1120
+SECPM,% Penetración,8.6%
+SECPM,Q's,96
+SECPM,Contracts,28
+SECPM,Average Price,24173
+SECPM,Closing Rate,29.2%
+SECPM,VPG,7050
+SECPM,Volume,676846
+SECTU,Arrivals,796
+SECTU,% Penetración,18.2%
+SECTU,Q's,145
+SECTU,Contracts,27
+SECTU,Average Price,20961
+SECTU,Closing Rate,18.6%
+SECTU,VPG,3903
+SECTU,Volume,565949
+SEIIM,Arrivals,278
+SEIIM,% Penetración,12.9%
+SEIIM,Q's,36
+SEIIM,Contracts,8
+SEIIM,Average Price,35844
+SEIIM,Closing Rate,22.2%
+SEIIM,VPG,7965
+SEIIM,Volume,286752
+SEMRC,Arrivals,1695
+SEMRC,% Penetración,15.9%
+SEMRC,Q's,269
+SEMRC,Contracts,54
+SEMRC,Average Price,22975
+SEMRC,Closing Rate,20.1%
+SEMRC,VPG,4612
+SEMRC,Volume,1240644
+SEPBC,Arrivals,1826
+SEPBC,% Penetración,13.6%
+SEPBC,Q's,248
+SEPBC,Contracts,41
+SEPBC,Average Price,23555
+SEPBC,Closing Rate,16.5%
+SEPBC,VPG,3894
+SEPBC,Volume,965752
+SEPDC,Arrivals,2201
+SEPDC,% Penetración,12.8%
+SEPDC,Q's,282
+SEPDC,Contracts,77
+SEPDC,Average Price,31347
+SEPDC,Closing Rate,27.3%
+SEPDC,VPG,8559
+SEPDC,Volume,2413720
+SEVCU,Arrivals,1748
+SEVCU,% Penetración,9.5%
+SEVCU,Q's,166
+SEVCU,Contracts,27
+SEVCU,Average Price,16648
+SEVCU,Closing Rate,16.3%
+SEVCU,VPG,2708
+SEVCU,Volume,449505
+NOECU,Arrivals,1088
+NOECU,% Penetración,16.2%
+NOECU,Q's,176
+NOECU,Contracts,29
+NOECU,Average Price,18459
+NOECU,Closing Rate,16.5%
+NOECU,VPG,3042
+NOECU,Volume,535323
+CUNIF,Arrivals,1233
+CUNIF,% Penetración,10.6%
+CUNIF,Q's,131
+CUNIF,Contracts,18
+CUNIF,Average Price,14643
+CUNIF,Closing Rate,13.7%
+CUNIF,VPG,2012
+CUNIF,Volume,263565
+CANIA,Arrivals,748
+CANIA,% Penetración,12.6%
+CANIA,Q's,94
+CANIA,Contracts,16
+CANIA,Average Price,24306
+CANIA,Closing Rate,17.0%
+CANIA,VPG,4137
+CANIA,Volume,388898
+CANIF,Arrivals,1427
+CANIF,% Penetración,2.7%
+CANIF,Q's,38
+CANIF,Contracts,6
+CANIF,Average Price,16804
+CANIF,Closing Rate,15.8%
+CANIF,VPG,2653
+CANIF,Volume,100826
+CUNIA,Arrivals,688
+CUNIA,% Penetración,3.8%
+CUNIA,Q's,26
+CUNIA,Contracts,6
+CUNIA,Average Price,17829
+CUNIA,Closing Rate,23.1%
+CUNIA,VPG,4114
+CUNIA,Volume,106972
+HVPDC,Arrivals,1299
+HVPDC,% Penetración,6.5%
+HVPDC,Q's,85
+HVPDC,Contracts,16
+HVPDC,Average Price,17832
+HVPDC,Closing Rate,18.8%
+HVPDC,VPG,3357
+HVPDC,Volume,285318
+SUCUN,Arrivals,1225
+SUCUN,% Penetración,6.7%
+SUCUN,Q's,82
+SUCUN,Contracts,8
+SUCUN,Average Price,16199
+SUCUN,Closing Rate,9.8%
+SUCUN,VPG,1580
+SUCUN,Volume,129591
+BRCSL,Arrivals,583
+BRCSL,% Penetración,9.4%
+BRCSL,Q's,55
+BRCSL,Contracts,14
+BRCSL,Average Price,19019
+BRCSL,Closing Rate,25.5%
+BRCSL,VPG,4841
+BRCSL,Volume,266264
+DRELC,Arrivals,959
+DRELC,% Penetración,14.5%
+DRELC,Q's,139
+DRELC,Contracts,38
+DRELC,Average Price,21700
+DRELC,Closing Rate,27.3%
+DRELC,VPG,5932
+DRELC,Volume,824596
+SEPLC,Arrivals,1605
+SEPLC,% Penetración,14.8%
+SEPLC,Q's,238
+SEPLC,Contracts,64
+SEPLC,Average Price,17953
+SEPLC,Closing Rate,26.9%
+SEPLC,VPG,4828
+SEPLC,Volume,1148988
+ZOCDM,Arrivals,191
+ZOCDM,% Penetración,10.5%
+ZOCDM,Q's,20
+ZOCDM,Contracts,5
+ZOCDM,Average Price,29050
+ZOCDM,Closing Rate,25.0%
+ZOCDM,VPG,7262
+ZOCDM,Volume,145249
+SJDIF,Arrivals,1212
+SJDIF,% Penetración,4.3%
+SJDIF,Q's,52
+SJDIF,Contracts,9
+SJDIF,Average Price,18221
+SJDIF,Closing Rate,17.3%
+SJDIF,VPG,3154
+SJDIF,Volume,163986
+DRVPV,Arrivals,803
+DRVPV,% Penetración,16.4%
+DRVPV,Q's,132
+DRVPV,Contracts,22
+DRVPV,Average Price,15314
+DRVPV,Closing Rate,16.7%
+DRVPV,VPG,2552
+DRVPV,Volume,336908
+SEVPV,Arrivals,565
+SEVPV,% Penetración,27.8%
+SEVPV,Q's,157
+SEVPV,Contracts,31
+SEVPV,Average Price,20731
+SEVPV,Closing Rate,19.7%
+SEVPV,VPG,4093
+SEVPV,Volume,642652
+SUNPV,Arrivals,888
+SUNPV,% Penetración,8.4%
+SUNPV,Q's,75
+SUNPV,Contracts,11
+SUNPV,Average Price,11105
+SUNPV,Closing Rate,14.7%
+SUNPV,VPG,1629
+SUNPV,Volume,122155
+DRBMI,Arrivals,797
+DRBMI,% Penetración,15.3%
+DRBMI,Q's,122
+DRBMI,Contracts,32
+DRBMI,Average Price,17193
+DRBMI,Closing Rate,26.2%
+DRBMI,VPG,4510
+DRBMI,Volume,550178
+SEBMI,Arrivals,563
+SEBMI,% Penetración,20.9%
+SEBMI,Q's,118
+SEBMI,Contracts,24
+SEBMI,Average Price,20537
+SEBMI,Closing Rate,20.3%
+SEBMI,VPG,4177
+SEBMI,Volume,492884
+DRMZT,Arrivals,835
+DRMZT,% Penetración,14.1%
+DRMZT,Q's,118
+DRMZT,Contracts,26
+DRMZT,Average Price,13199
+DRMZT,Closing Rate,22.0%
+DRMZT,VPG,2908
+DRMZT,Volume,343167
+SUDIX,Arrivals,727
+SUDIX,% Penetración,11.3%
+SUDIX,Q's,82
+SUDIX,Contracts,10
+SUDIX,Average Price,12208
+SUDIX,Closing Rate,12.2%
+SUDIX,VPG,1489
+SUDIX,Volume,122083
+DREHU,Arrivals,1175
+DREHU,% Penetración,16.6%
+DREHU,Q's,195
+DREHU,Contracts,30
+DREHU,Average Price,14728
+DREHU,Closing Rate,15.4%
+DREHU,VPG,2266
+DREHU,Volume,441837
+SECHU,Arrivals,957
+SECHU,% Penetración,18.8%
+SECHU,Q's,180
+SECHU,Contracts,39
+SECHU,Average Price,14915
+SECHU,Closing Rate,21.7%
+SECHU,VPG,3232
+SECHU,Volume,581689
+SEPCR,Arrivals,771
+SEPCR,% Penetración,16.1%
+SEPCR,Q's,124
+SEPCR,Contracts,34
+SEPCR,Average Price,18150
+SEPCR,Closing Rate,27.4%
+SEPCR,VPG,4977
+SEPCR,Volume,617106
+DDPBP,Arrivals,769
+DDPBP,% Penetración,9.8%
+DDPBP,Q's,75
+DDPBP,Contracts,16
+DDPBP,Average Price,19552
+DDPBP,Closing Rate,21.3%
+DDPBP,VPG,4171
+DDPBP,Volume,312826
+PVRIF,Arrivals,1007
+PVRIF,% Penetración,8.1%
+PVRIF,Q's,82
+PVRIF,Contracts,17
+PVRIF,Average Price,13718
+PVRIF,Closing Rate,20.7%
+PVRIF,VPG,2844
+PVRIF,Volume,233209
+BREPC,Arrivals,2571
+BREPC,% Penetración,11.2%
+BREPC,Q's,287
+BREPC,Contracts,34
+BREPC,Average Price,17102
+BREPC,Closing Rate,11.8%
+BREPC,VPG,2026
+BREPC,Volume,581485
+DREDL,Arrivals,1506
+DREDL,% Penetración,4.3%
+DREDL,Q's,65
+DREDL,Contracts,14
+DREDL,Average Price,18453
+DREDL,Closing Rate,21.5%
+DREDL,VPG,3975
+DREDL,Volume,258348
+DRECC,Arrivals,1282
+DRECC,% Penetración,10.7%
+DRECC,Q's,137
+DRECC,Contracts,21
+DRECC,Average Price,16689
+DRECC,Closing Rate,15.3%
+DRECC,VPG,2558
+DRECC,Volume,350474
+DREPE,Arrivals,1377
+DREPE,% Penetración,4.4%
+DREPE,Q's,60
+DREPE,Contracts,9
+DREPE,Average Price,21235
+DREPE,Closing Rate,15.0%
+DREPE,VPG,3185
+DREPE,Volume,191114
+DRFPC,Arrivals,1510
+DRFPC,% Penetración,9.8%
+DRFPC,Q's,148
+DRFPC,Contracts,24
+DRFPC,Average Price,19113
+DRFPC,Closing Rate,16.2%
+DRFPC,VPG,3099
+DRFPC,Volume,458715
+DRMPC,Arrivals,1734
+DRMPC,% Penetración,9.2%
+DRMPC,Q's,159
+DRMPC,Contracts,26
+DRMPC,Average Price,20257
+DRMPC,Closing Rate,16.4%
+DRMPC,VPG,3312
+DRMPC,Volume,526673
+DROPC,Arrivals,2727
+DROPC,% Penetración,9.0%
+DROPC,Q's,246
+DROPC,Contracts,32
+DROPC,Average Price,25082
+DROPC,Closing Rate,13.0%
+DROPC,VPG,3263
+DROPC,Volume,802622
+DRRPC,Arrivals,1260
+DRRPC,% Penetración,10.0%
+DRRPC,Q's,126
+DRRPC,Contracts,20
+DRRPC,Average Price,15016
+DRRPC,Closing Rate,15.9%
+DRRPC,VPG,2384
+DRRPC,Volume,300324
+HYVPC,Arrivals,0
+HYVPC,% Penetración,0.0%
+HYVPC,Q's,-
+HYVPC,Contracts,-
+HYVPC,Average Price,-
+HYVPC,Closing Rate,0.0%
+HYVPC,VPG,-
+HYVPC,Volume,-
+SECCC,Arrivals,1665
+SECCC,% Penetración,14.1%
+SECCC,Q's,235
+SECCC,Contracts,35
+SECCC,Average Price,22823
+SECCC,Closing Rate,14.9%
+SECCC,VPG,3399
+SECCC,Volume,798794
+SECPE,Arrivals,1359
+SECPE,% Penetración,9.0%
+SECPE,Q's,123
+SECPE,Contracts,23
+SECPE,Average Price,19876
+SECPE,Closing Rate,18.7%
+SECPE,VPG,3717
+SECPE,Volume,457141
+SERPC,Arrivals,2228
+SERPC,% Penetración,12.2%
+SERPC,Q's,272
+SERPC,Contracts,44
+SERPC,Average Price,21377
+SERPC,Closing Rate,16.2%
+SERPC,VPG,3458
+SERPC,Volume,940603
+SETPC,Arrivals,2028
+SETPC,% Penetración,12.5%
+SETPC,Q's,253
+SETPC,Contracts,37
+SETPC,Average Price,22710
+SETPC,Closing Rate,14.6%
+SETPC,VPG,3321
+SETPC,Volume,840278
+SUCDP,Arrivals,2948
+SUCDP,% Penetración,5.8%
+SUCDP,Q's,171
+SUCDP,Contracts,25
+SUCDP,Average Price,13515
+SUCDP,Closing Rate,14.6%
+SUCDP,VPG,1976
+SUCDP,Volume,337877
+SUDLR,Arrivals,2875
+SUDLR,% Penetración,2.8%
+SUDLR,Q's,81
+SUDLR,Contracts,12
+SUDLR,Average Price,11009
+SUDLR,Closing Rate,14.8%
+SUDLR,VPG,1631
+SUDLR,Volume,132110
+ZOAPC,Arrivals,204
+ZOAPC,% Penetración,16.1%
+ZOAPC,Q's,33
+ZOAPC,Contracts,6
+ZOAPC,Average Price,23747
+ZOAPC,Closing Rate,18.2%
+ZOAPC,VPG,4318
+ZOAPC,Volume,142484
+DRELR,Arrivals,1036
+DRELR,% Penetración,2.4%
+DRELR,Q's,25
+DRELR,Contracts,5
+DRELR,Average Price,10196
+DRELR,Closing Rate,20.0%
+DRELR,VPG,2039
+DRELR,Volume,50979
+SECLR,Arrivals,884
+SECLR,% Penetración,3.4%
+SECLR,Q's,30
+SECLR,Contracts,4
+SECLR,Average Price,10144
+SECLR,Closing Rate,13.3%
+SECLR,VPG,1353
+SECLR,Volume,40576
+PUJIF,Arrivals,1081
+PUJIF,% Penetración,3.4%
+PUJIF,Q's,37
+PUJIF,Contracts,4
+PUJIF,Average Price,17918
+PUJIF,Closing Rate,10.8%
+PUJIF,VPG,1937
+PUJIF,Volume,71673
+PUJIA,Arrivals,1053
+PUJIA,% Penetración,4.6%
+PUJIA,Q's,48
+PUJIA,Contracts,10
+PUJIA,Average Price,19631
+PUJIA,Closing Rate,20.8%
+PUJIA,VPG,4090
+PUJIA,Volume,196314
+DRCUR,Arrivals,791
+DRCUR,% Penetración,10.1%
+DRCUR,Q's,80
+DRCUR,Contracts,15
+DRCUR,Average Price,12577
+DRCUR,Closing Rate,18.8%
+DRCUR,VPG,2358
+DRCUR,Volume,188654
+SUCUR,Arrivals,1111
+SUCUR,% Penetración,3.4%
+SUCUR,Q's,38
+SUCUR,Contracts,6
+SUCUR,Average Price,11064
+SUCUR,Closing Rate,15.8%
+SUCUR,VPG,1747
+SUCUR,Volume,66384
+ZOCUR,Arrivals,208
+ZOCUR,% Penetración,7.7%
+ZOCUR,Q's,16
+ZOCUR,Contracts,4
+ZOCUR,Average Price,11050
+ZOCUR,Closing Rate,25.0%
+ZOCUR,VPG,2763
+ZOCUR,Volume,44200
+SMBSL,Arrivals,1008
+SMBSL,% Penetración,6.6%
+SMBSL,Q's,67
+SMBSL,Contracts,17
+SMBSL,Average Price,24685
+SMBSL,Closing Rate,25.4%
+SMBSL,VPG,6263
+SMBSL,Volume,419648
+ZOMSL,Arrivals,300
+ZOMSL,% Penetración,4.3%
+ZOMSL,Q's,13
+ZOMSL,Contracts,3
+ZOMSL,Average Price,20113
+ZOMSL,Closing Rate,23.1%
+ZOMSL,VPG,4642
+ZOMSL,Volume,60340
+SEAUA,Arrivals,1027
+SEAUA,% Penetración,14.1%
+SEAUA,Q's,145
+SEAUA,Contracts,35
+SEAUA,Average Price,19825
+SEAUA,Closing Rate,24.1%
+SEAUA,VPG,4785
+SEAUA,Volume,693865
 
