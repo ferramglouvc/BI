@@ -184,6 +184,19 @@ def apply_styles(colors):
                 font-size: 12px;
             }}
         }}
+
+        @media (max-width: 768px) {{
+    div[data-testid="stHorizontalBlock"] {{
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+    }}
+
+    div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {{
+        flex: 1 1 calc(50% - 0.5rem) !important;
+        min-width: calc(50% - 0.5rem) !important;
+        max-width: calc(50% - 0.5rem) !important;
+    }}
+}}
         </style>
         """,
         unsafe_allow_html=True,
