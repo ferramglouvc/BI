@@ -80,18 +80,17 @@ budget_df = load_metric_file(
 # HEADER
 # =====================================
 
-title_col, logout_col = st.columns([9, 1])
+title_col, logout_col = st.columns([20, 1])
 
 with title_col:
     st.title("BI Calculator")
 
 with logout_col:
-    st.markdown("<br>", unsafe_allow_html=True)
+    st.markdown("<div style='margin-top:18px;'></div>", unsafe_allow_html=True)
 
     if st.button(
         "⎋",
         help="Logout",
-        use_container_width=True,
         key="logout_header",
     ):
         user = st.session_state.username
@@ -101,6 +100,7 @@ with logout_col:
 
         st.session_state.authenticated = False
         st.session_state.username = None
+
         st.rerun()
 
 yesterday = datetime.now() - timedelta(days=1)
