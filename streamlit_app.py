@@ -90,7 +90,7 @@ budget_upg = load_metric_file(
 )
 if sales_view == "New Sales":
 
-    df = actual_all[actual_all["SalesType"] == "New Sales"]
+    df = actual_all[actual_all["Sales Type"] == "New Sales"]
 
     forecast_df = forecast_new
 
@@ -98,7 +98,7 @@ if sales_view == "New Sales":
 
 elif sales_view == "Upgrades":
 
-    df = actual_all[actual_all["SalesType"] == "Upgrades"]
+    df = actual_all[actual_all["Sales Type"] == "Upgrades"]
 
     forecast_df = forecast_upg
 
