@@ -88,13 +88,14 @@ budget_upg = load_metric_file(
     "budget_upgrades.csv",
     (DATA_DIR / "budget_upgrades.csv").stat().st_mtime,
 )
+
 if sales_view == "New Sales":
-    df = actual_all[actual_all["SalesType"] == "New Sales"]
+    df = actual_all[actual_all["Sales Type"] == "New Sales"]
     forecast_df = forecast_new
     budget_df = budget_new
 
 elif sales_view == "Upgrades":
-    df = actual_all[actual_all["SalesType"] == "Upgrades"]
+    df = actual_all[actual_all["Sales Type"] == "Upgrades"]
     forecast_df = forecast_upg
     budget_df = budget_upg
 
