@@ -71,16 +71,16 @@ def render_simulator():
 def render_bottom_actions():
     st.markdown("<div style='margin-top: 0.2rem;'></div>", unsafe_allow_html=True)
 
-    btn_left, btn_reset, btn_logout, btn_right = st.columns([5, 1, 1, 5])
+    btn_left, btn_reset, btn_right = st.columns([5,2,5])
 
-    with btn_reset:
-        st.button(
-            "↺",
-            help="Reset simulator",
-            use_container_width=True,
-            key="reset_simulator_btn",
-            on_click=request_simulator_reset,
-        )
+with btn_reset:
+    st.button(
+        "↺ Reset",
+        help="Reset simulator",
+        use_container_width=True,
+        key="reset_simulator_btn",
+        on_click=request_simulator_reset,
+    )
 
     with btn_logout:
         if st.button("⎋", help="Logout", use_container_width=True, key="logout_btn"):
