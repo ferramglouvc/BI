@@ -1,5 +1,4 @@
 import streamlit as st
-from streamlit_js_eval import streamlit_js_eval
 
 
 def init_simulator_context(context_key, defaults):
@@ -16,61 +15,57 @@ def request_simulator_reset():
     st.session_state["sim_reset_requested"] = True
 
 
-def _render_input(col, label, key, value, step, fmt):
-    with col:
-        st.number_input(
-            label,
-            key=key,
-            value=float(value),
-            step=step,
-            format=fmt,
-            label_visibility="visible",
-        )
-
-
 def render_simulator():
-    st.markdown("<div class='section-title'>Actuals Simulator</div>", unsafe_allow_html=True)
-    st.markdown("<div class='simulator-wrap'>", unsafe_allow_html=True)
-
-    screen_width = streamlit_js_eval(
-        js_expressions="window.innerWidth",
-        want_output=True,
-        key="WIDTH",
+    st.markdown(
+        "<div class='section-title' style='margin-top:0rem;margin-bottom:0rem;'>Actuals Simulator</div>",
+        unsafe_allow_html=True
     )
 
-    if screen_width is None:
-        st.markdown("</div>", unsafe_allow_html=True)
-        st.stop()
+    # muy poco espacio arriba del bloque
+    st.markdown("<div style='margin-top:-0.75rem;'></div>", unsafe_allow_html=True)
 
-    if screen_width < 768:
-        row1_col1, row1_col2 = st.columns(2, gap="small")
-        row2_col1, row2_col2 = st.columns(2, gap="small")
+    row1_col1, row1_col2 = st.columns(2, gap="small")
+    row2_col1, row2_col2 = st.columns(2, gap="small")
 
-        _render_input(
-            row1_col1, "Arrivals", "sim_arrivals",
-            st.session_state["sim_arrivals"], 1.0, "%.0f"
+    with row1_col1:
+        st.number_input(
+            "Arrivals",
+            key="sim_arrivals",
+            value=float(st.session_state["sim_arrivals"]),
+            step=1.0,
+            format="%.0f",
+            label_visibility="visible"
         )
-        _render_input(
-            row1_col2, "Contracts", "sim_contracts",
-            st.session_state["sim_contracts"], 1.0, "%.0f"
-        )
-        _render_input(
-            row2_col1, "Closing Rate %", "sim_closing_rate",
-            st.session_state["sim_closing_rate"], 0.1, "%.1f"
-        )
-        _render_input(
-            row2_col2, "Average Price ($)", "sim_avg_price",
-            st.session_state["sim_avg_price"], 100.0, "%.0f"
-        )
-    else:
-        c1, c2, c3, c4 = st.columns(4, gap="small")
 
-        _render_input(c1, "Arrivals", "sim_arrivals", st.session_state["sim_arrivals"], 1.0, "%.0f")
-        _render_input(c2, "Contracts", "sim_contracts", st.session_state["sim_contracts"], 1.0, "%.0f")
-        _render_input(c3, "Closing Rate %", "sim_closing_rate", st.session_state["sim_closing_rate"], 0.1, "%.1f")
-        _render_input(c4, "Average Price ($)", "sim_avg_price", st.session_state["sim_avg_price"], 100.0, "%.0f")
+    with row1_col2:
+        st.number_input(
+            "Contracts",
+            key="sim_contracts",
+            value=float(st.session_state["sim_contracts"]),
+            step=1.0,
+            format="%.0f",
+            label_visibility="visible"
+        )
 
-    st.markdown("</div>", unsafe_allow_html=True)
+    with row2_col1:
+        st.number_input(
+            "Closing Rate %",
+            key="sim_closing_rate",
+            value=float(st.session_state["sim_closing_rate"]),
+            step=0.1,
+            format="%.1f",
+            label_visibility="visible"
+        )
+
+    with row2_col2:
+        st.number_input(
+            "Average Price ($)",
+            key="sim_avg_price",
+            value=float(st.session_state["sim_avg_price"]),
+            step=100.0,
+            format="%.0f",
+            label_visibility="visible"
+        )
 
 
 def render_bottom_actions():
