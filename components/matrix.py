@@ -246,5 +246,6 @@ def render_matrix(rows, colors):
     st.components.v1.html(
         html_out,
         height=height,
-        scrolling=False
+        scrolling=False,
+        key=f"matrix_{len(rows)}_{rows[0][0]}"
     )
