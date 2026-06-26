@@ -247,5 +247,4 @@ def render_matrix(rows, colors):
         html_out,
         height=height,
         scrolling=False,
-        key=f"matrix_{len(rows)}_{rows[0][0]}"
     )
