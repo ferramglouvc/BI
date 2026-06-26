@@ -90,12 +90,12 @@ budget_upg = load_metric_file(
 )
 
 if sales_view == "New Sales":
-    df = actual_all[actual_all["Sales Type"] == "New Sales"]
+    df = actual_all[actual_all["Sales Type"].astype(str).str.strip().str.upper() == "N"]
     forecast_df = forecast_new
     budget_df = budget_new
 
 elif sales_view == "Upgrades":
-    df = actual_all[actual_all["Sales Type"] == "Upgrades"]
+    df = actual_all[actual_all["Sales Type"].astype(str).str.strip().str.upper() == "U"]
     forecast_df = forecast_upg
     budget_df = budget_upg
 
