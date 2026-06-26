@@ -73,8 +73,7 @@ def render_bottom_actions():
     left, center, right = st.columns([5, 2, 5])
 
     with center:
-
-        st.button(
+          st.button(
             "↺",
             help="Reset simulator",
             key="reset_simulator_btn",
