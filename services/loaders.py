@@ -21,10 +21,6 @@ def _normalize_sales_type(value):
 def load_data():
     df = pd.read_csv(BASE_DIR / "data" / "kpi_table.csv")
     df.columns = df.columns.str.strip()
-
-    if "Sales Type" in df.columns:
-        df["Sales Type"] = df["Sales Type"].apply(_normalize_sales_type)
-
     return df
 
 
