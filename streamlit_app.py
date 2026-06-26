@@ -80,7 +80,7 @@ budget_df = load_metric_file(
 # HEADER
 # =====================================
 
-title_col, logout_col = st.columns([9,1])
+title_col, logout_col = st.columns([9, 1])
 
 with title_col:
     st.title("BI Calculator")
