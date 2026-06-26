@@ -241,7 +241,7 @@ def render_matrix(rows, colors):
     </html>
     """
 
-    height = 0 + (len(rows) * 10)
+    height = 0 + (len(rows) * 20)
 
     st.components.v1.html(
         html_out,
