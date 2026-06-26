@@ -64,6 +64,28 @@ sales_view = st.segmented_control(
     default="Cost Basis"
 )
 
+actual_all = load_data()
+
+forecast_new = load_metric_file("forecast_new.csv", ...)
+forecast_upg = load_metric_file("forecast_upgrades.csv", ...)
+budget_new = load_metric_file("budget_new.csv", ...)
+budget_upg = load_metric_file("budget_upgrades.csv", ...)
+
+if sales_view == "New Sales":
+    actual_df = actual_all[actual_all["SalesType"] == "New Sales"]
+    forecast_df = forecast_new
+    budget_df = budget_new
+
+elif sales_view == "Upgrades":
+    actual_df = actual_all[actual_all["SalesType"] == "Upgrades"]
+    forecast_df = forecast_upg
+    budget_df = budget_upg
+
+else:
+    actual_df = actual_all
+    forecast_df = pd.concat([forecast_new, forecast_upg], ignore_index=True)
+    budget_df = pd.concat([budget_new, budget_upg], ignore_index=True)
+    
 # =====================================
 # DATA
 # =====================================
