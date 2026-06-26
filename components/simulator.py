@@ -20,8 +20,6 @@ def render_simulator():
         "<div class='section-title' style='margin-top:0rem;margin-bottom:0rem;'>Actuals Simulator</div>",
         unsafe_allow_html=True
     )
-
-    # muy poco espacio arriba del bloque
     st.markdown("<div style='margin-top:-0.75rem;'></div>", unsafe_allow_html=True)
 
     row1_col1, row1_col2 = st.columns(2, gap="small")
@@ -71,23 +69,13 @@ def render_simulator():
 def render_bottom_actions():
     st.markdown("<div style='margin-top: 0.2rem;'></div>", unsafe_allow_html=True)
 
-    btn_left, btn_reset, btn_right = st.columns([5,2,5])
+    btn_left, btn_reset, btn_right = st.columns([5, 2, 5])
 
-with btn_reset:
-    st.button(
-        "↺ Reset",
-        help="Reset simulator",
-        use_container_width=True,
-        key="reset_simulator_btn",
-        on_click=request_simulator_reset,
-    )
-
-    with btn_logout:
-        if st.button("⎋", help="Logout", use_container_width=True, key="logout_btn"):
-            user = st.session_state.username
-            if user in st.session_state.active_users:
-                del st.session_state.active_users[user]
-
-            st.session_state.authenticated = False
-            st.session_state.username = None
-            st.rerun()
+    with btn_reset:
+        st.button(
+            "↺ Reset",
+            help="Reset simulator",
+            use_container_width=True,
+            key="reset_simulator_btn",
+            on_click=request_simulator_reset,
+        )
