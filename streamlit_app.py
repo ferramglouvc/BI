@@ -17,11 +17,6 @@ from components.simulator import (
 from services.loaders import load_data, load_metric_file
 from services.aggregations import aggregate_actual_defaults, summarize_metric_subset
 from services.calculations import calculate_actual_kpis, calculate_projection
-sales_view = st.segmented_control(
-    "Sales View",
-    ["Cost Basis", "New Sales", "Upgrades"],
-    default="Cost Basis"
-)
 from services.project_leaders import PROJECT_LEADERS
 
 # =====================================
