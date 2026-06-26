@@ -174,7 +174,13 @@ if budget_filtered.empty:
 # ACTUAL DEFAULTS
 # =====================================
 
-if sales_view == "Cost Basis" or len(filtered) > 1:
+# =====================================
+# ACTUAL DEFAULTS
+# =====================================
+
+context_key = f"{sales_view}::{project_leader}::{salesroom}"
+
+if len(filtered) > 1:
     actual_arrivals_default, actual_contracts_default, actual_closing_rate_default, actual_avg_price_default = aggregate_actual_defaults(filtered)
 else:
     row = filtered.iloc[0]
@@ -185,7 +191,6 @@ else:
         actual_closing_rate_default *= 100
     actual_avg_price_default = float(row.get("Average Price", 0))
 
-context_key = f"{project_leader}::{salesroom}"
 init_simulator_context(
     context_key,
     {
