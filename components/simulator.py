@@ -16,7 +16,7 @@ def request_simulator_reset():
 
 
 def render_simulator():
-    st.markdown("<div class='section-title'>Actuals Simulator</div>", unsafe_allow_html=True)
+    st.markdown("<div class='section-title' style='margin-top:0rem;margin-bottom:0rem;'>Actuals Simulator</div>", unsafe_allow_html=True)
     st.markdown("<div class='simulator-wrap'>", unsafe_allow_html=True)
 
     sim_c1, sim_c2, sim_c3, sim_c4 = st.columns(4, gap="small")
