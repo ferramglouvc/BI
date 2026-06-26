@@ -85,28 +85,60 @@ else:
     actual_df = actual_all
     forecast_df = pd.concat([forecast_new, forecast_upg], ignore_index=True)
     budget_df = pd.concat([budget_new, budget_upg], ignore_index=True)
-    
-# =====================================
-# DATA
-# =====================================
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 
-df = load_data()
+actual_all = load_data()
 
-forecast_file = "Jun_Forecast.csv"
-budget_file = "Jun_Budget.csv"
-
-forecast_df = load_metric_file(
-    forecast_file,
-    (DATA_DIR / forecast_file).stat().st_mtime
+forecast_new = load_metric_file(
+    "forecast_new.csv",
+    (DATA_DIR / "forecast_new.csv").stat().st_mtime,
 )
 
-budget_df = load_metric_file(
-    budget_file,
-    (DATA_DIR / budget_file).stat().st_mtime
+forecast_upg = load_metric_file(
+    "forecast_upgrades.csv",
+    (DATA_DIR / "forecast_upgrades.csv").stat().st_mtime,
 )
+
+budget_new = load_metric_file(
+    "budget_new.csv",
+    (DATA_DIR / "budget_new.csv").stat().st_mtime,
+)
+
+budget_upg = load_metric_file(
+    "budget_upgrades.csv",
+    (DATA_DIR / "budget_upgrades.csv").stat().st_mtime,
+)
+if sales_view == "New Sales":
+
+    df = actual_all[actual_all["SalesType"] == "New Sales"]
+
+    forecast_df = forecast_new
+
+    budget_df = budget_new
+
+elif sales_view == "Upgrades":
+
+    df = actual_all[actual_all["SalesType"] == "Upgrades"]
+
+    forecast_df = forecast_upg
+
+    budget_df = budget_upg
+
+else:
+
+    df = actual_all
+
+    forecast_df = pd.concat(
+        [forecast_new, forecast_upg],
+        ignore_index=True
+    )
+
+    budget_df = pd.concat(
+        [budget_new, budget_upg],
+        ignore_index=True
+    )
 
 # =====================================
 # HEADER
