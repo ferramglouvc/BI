@@ -74,6 +74,7 @@ def render_bottom_actions():
 
     with center:
           st.button(
+              
             "↺",
             help="Reset simulator",
             key="reset_simulator_btn",
