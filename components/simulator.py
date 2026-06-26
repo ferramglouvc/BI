@@ -77,4 +77,5 @@ def render_bottom_actions():
             help="Reset simulator",
             key="reset_simulator_btn",
             on_click=request_simulator_reset,
+            use_container_width=True
         )
