@@ -80,7 +80,28 @@ budget_df = load_metric_file(
 # HEADER
 # =====================================
 
-st.title("BI Calculator")
+title_col, logout_col = st.columns([9,1])
+
+with title_col:
+    st.title("BI Calculator")
+
+with logout_col:
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    if st.button(
+        "⎋",
+        help="Logout",
+        use_container_width=True,
+        key="logout_header",
+    ):
+        user = st.session_state.username
+
+        if user in st.session_state.active_users:
+            del st.session_state.active_users[user]
+
+        st.session_state.authenticated = False
+        st.session_state.username = None
+        st.rerun()
 
 yesterday = datetime.now() - timedelta(days=1)
 st.caption(f"Data until {yesterday.strftime('%B %d, %Y')}")
