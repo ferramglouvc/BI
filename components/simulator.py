@@ -69,7 +69,7 @@ def render_simulator():
 def render_bottom_actions():
     st.markdown("<div style='margin-top:0.3rem;'></div>", unsafe_allow_html=True)
 
-    left, center, right = st.columns([6, 1, 6])
+    left, center, right = st.columns([5, 2, 5])
 
     with center:
         st.button(
