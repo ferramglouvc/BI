@@ -61,7 +61,8 @@ validate_session()
 sales_view = st.segmented_control(
     "Sales View",
     ["New Sales", "Upgrades", "Cost Basis"],
-    default="Cost Basis"
+    default="Cost Basis",
+    key="sales_view_selector"
 )
 
 BASE_DIR = Path(__file__).resolve().parent
