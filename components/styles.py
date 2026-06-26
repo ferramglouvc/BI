@@ -197,6 +197,22 @@ def apply_styles(colors):
         max-width: calc(50% - 0.5rem) !important;
     }}
 }}
+
+@media (max-width: 768px) {{
+    div[data-testid="stHorizontalBlock"] {{
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 0.5rem !important;
+    }}
+
+    div[data-testid="stHorizontalBlock"] > div {{
+        flex: 1 1 calc(50% - 0.5rem) !important;
+        min-width: calc(50% - 0.5rem) !important;
+        max-width: calc(50% - 0.5rem) !important;
+        width: calc(50% - 0.5rem) !important;
+    }}
+}}
         </style>
         """,
         unsafe_allow_html=True,
