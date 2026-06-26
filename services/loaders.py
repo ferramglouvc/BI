@@ -1,50 +1,29 @@
 from pathlib import Path
-
 import pandas as pd
 import streamlit as st
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 def _normalize_sales_type(value):
     if pd.isna(value):
         return value
-
     value = str(value).strip()
-
-    mapping = {
+    return {
         "N": "New Sales",
         "U": "Upgrades",
-        "NEW SALES": "New Sales",
-        "UPGRADES": "Upgrades",
         "New Sales": "New Sales",
         "Upgrades": "Upgrades",
-        "New Sales ": "New Sales",
-        " Upgrades": "Upgrades",
-    }
-
-    return mapping.get(value, mapping.get(value.upper(), value))
-
+        "new sales": "New Sales",
+        "upgrades": "Upgrades",
+    }.get(value, value)
 
 @st.cache_data(show_spinner=False)
 def load_data():
     df = pd.read_csv(BASE_DIR / "data" / "kpi_table.csv")
-
     df.columns = df.columns.str.strip()
 
-    # Normaliza el nombre de la columna si viene con espacio
-    if "Sales Type" in df.columns and "SalesType" not in df.columns:
-        df = df.rename(columns={"Sales Type": "SalesType"})
-
-    # Si aún viene con otro nombre parecido, intenta detectarlo
-    if "SalesType" not in df.columns:
-        for col in df.columns:
-            if col.strip().lower() in {"sales type", "salestype"}:
-                df = df.rename(columns={col: "SalesType"})
-                break
-
-    if "SalesType" in df.columns:
-        df["SalesType"] = df["SalesType"].apply(_normalize_sales_type)
+    if "Sales Type" in df.columns:
+        df["Sales Type"] = df["Sales Type"].apply(_normalize_sales_type)
 
     return df
 
