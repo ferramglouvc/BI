@@ -111,8 +111,17 @@ with logout_col:
 
         st.rerun()
 
-yesterday = datetime.now() - timedelta(days=1)
-st.caption(f"Data until {yesterday.strftime('%B %d, %Y')}")
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
+
+def get_data_until_date():
+    now_cancun = datetime.now(ZoneInfo("America/Cancun"))
+    if now_cancun.hour < 11:
+        return now_cancun.date() - timedelta(days=2)
+    return now_cancun.date() - timedelta(days=1)
+
+data_date = get_data_until_date()
+st.caption(f"Data until {data_date.strftime('%B %d, %Y')}")
 
 # =====================================
 # FILTERS
