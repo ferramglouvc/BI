@@ -43,13 +43,8 @@ def render_login(users: dict):
 
 
 def validate_session():
-    if st.session_state.username:
-        active_id = st.session_state.active_users.get(st.session_state.username)
-        if active_id != st.session_state.session_id:
-            st.session_state.authenticated = False
-            st.session_state.username = None
-            st.error("Your session was replaced by another login.")
-            st.stop()
+    if not st.session_state.get("authenticated", False):
+        st.stop()
 
 
 def logout_current_user():
