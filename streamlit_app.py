@@ -184,10 +184,6 @@ if budget_filtered.empty:
 # ACTUAL DEFAULTS
 # =====================================
 
-# =====================================
-# ACTUAL DEFAULTS
-# =====================================
-
 context_key = f"{sales_view}::{project_leader}::{salesroom}"
 
 if len(filtered) > 1:
@@ -320,8 +316,12 @@ var_avg_price_budget = proj_avg_price - budget_avg_price
 # =====================================
 
 st.markdown("<div class='section-title'>KPI Matrix</div>", unsafe_allow_html=True)
+data_date = get_data_date()
+today_cancun = datetime.now(ZoneInfo("America/Cancun")).date()
+days_remaining = (today_cancun - data_date).days
+
 st.caption(
-    f"Projection based on {legend_date.strftime('%B %d, %Y')} | {days_remaining} days remaining"
+    f"Projection based on {data_date.strftime('%B %d, %Y')} | {days_remaining} days remaining"
 )
 
 matrix_rows = [
