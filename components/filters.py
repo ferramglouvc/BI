@@ -27,7 +27,7 @@ def render_filters(df, project_leaders):
     salesroom_options = ["ALL"] + leader_salesrooms
 
     salesroom = st.selectbox(
-        "Select SalesRoom",
+        "Select Location",
         salesroom_options
     )
 
