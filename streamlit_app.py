@@ -94,24 +94,6 @@ title_col, logout_col = st.columns([20, 1])
 with title_col:
     st.title("BI Calculator")
 
-with logout_col:
-    st.markdown("<div style='margin-top:18px;'></div>", unsafe_allow_html=True)
-
-    if st.button(
-        "⎋",
-        help="Logout",
-        key="logout_header",
-    ):
-        user = st.session_state.username
-
-        if user in st.session_state.active_users:
-            del st.session_state.active_users[user]
-
-        st.session_state.authenticated = False
-        st.session_state.username = None
-
-        st.rerun()
-
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 
