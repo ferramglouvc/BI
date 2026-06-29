@@ -1,25 +1,21 @@
+# services/loaders.py
 from pathlib import Path
 import pandas as pd
 import streamlit as st
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 @st.cache_data(show_spinner=False)
-def load_data():
-    df = pd.read_csv(BASE_DIR / "data" / "kpi_table.csv", sep=None, engine="python")
-
-    # Quita corchetes y espacios de los nombres de columna
+def load_data(file_mtime: float):
+    path = BASE_DIR / "data" / "kpi_table.csv"
+    df = pd.read_csv(path, sep=None, engine="python")
     df.columns = (
         df.columns
         .str.replace("[", "", regex=False)
         .str.replace("]", "", regex=False)
         .str.strip()
     )
-
-    # Elimina columnas vacías que sobran por el pegado/export
     df = df.loc[:, ~df.columns.str.contains("^Unnamed")]
-
     return df
 
 
