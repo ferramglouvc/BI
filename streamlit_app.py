@@ -316,6 +316,7 @@ var_avg_price_budget = proj_avg_price - budget_avg_price
 # =====================================
 
 st.markdown("<div class='section-title'>KPI Matrix</div>", unsafe_allow_html=True)
+
 data_date = get_data_date()
 today_cancun = datetime.now(ZoneInfo("America/Cancun")).date()
 days_remaining = (today_cancun - data_date).days
