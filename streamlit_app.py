@@ -61,7 +61,8 @@ validate_session()
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 
-actual_all = load_data()
+actual_path = DATA_DIR / "kpi_table.csv"
+actual_all = load_data(actual_path.stat().st_mtime)
 
 forecast_new = load_metric_file(
     "forecast_new.csv",
