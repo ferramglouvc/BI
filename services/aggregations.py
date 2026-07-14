@@ -9,12 +9,7 @@ def _numeric_series(
     df: pd.DataFrame,
     column: str,
 ) -> pd.Series:
-    """
-    Return a numeric Series for a column.
-
-    Missing columns return a Series of zeros with
-    the same index as the DataFrame.
-    """
+    """Return a numeric Series, or zeros when the column is absent."""
 
     if column not in df.columns:
         return pd.Series(
@@ -30,9 +25,7 @@ def _numeric_series(
 
 
 def _normalize_metric_name(value: object) -> str:
-    """
-    Normalize names used by long-format target files.
-    """
+    """Normalize metric names used by long-format target files."""
 
     text = str(value).strip()
 
@@ -44,9 +37,9 @@ def _normalize_metric_name(value: object) -> str:
         "Q’s": "Qs",
         "Q´s": "Qs",
         "Contracts Processable": "Contracts",
+        "Reservations Arrivals": "Arrivals",
         "Average Price": "Average Price",
         "Closing Rate": "Closing Rate",
-        "Reservations Arrivals": "Arrivals",
         "Arrivals": "Arrivals",
         "Contracts": "Contracts",
         "VPG": "VPG",
@@ -57,10 +50,6 @@ def _normalize_metric_name(value: object) -> str:
 
 
 def _empty_metric_summary() -> dict[str, float]:
-    """
-    Return the metric structure expected by streamlit_app.py.
-    """
-
     return {
         "Arrivals": 0.0,
         "Penetration": 0.0,
@@ -83,15 +72,12 @@ def aggregate_actual_defaults(
     """
     Aggregate actual values for the selected context.
 
-    Important:
-    Arrivals is repeated across Membership Type rows.
-    It is counted once per SalesRoom and Sales Type.
+    Arrivals is repeated across Membership Type rows, so it is counted
+    once per SalesRoom and Sales Type. Average Price is contract-weighted.
+    Closing Rate is rebuilt from total Contracts and estimated total Qs.
 
     Returns:
-        arrivals
-        contracts
-        closing_rate_percentage
-        average_price
+        arrivals, contracts, closing_rate_percentage, average_price
     """
 
     if df.empty:
@@ -99,65 +85,32 @@ def aggregate_actual_defaults(
 
     work = df.copy()
 
-    work["Arrivals"] = _numeric_series(
-        work,
-        "Arrivals",
-    )
-
+    work["Arrivals"] = _numeric_series(work, "Arrivals")
     work["Contracts Processable"] = _numeric_series(
         work,
         "Contracts Processable",
     )
+    work["Average Price"] = _numeric_series(work, "Average Price")
+    work["Closing Rate"] = _numeric_series(work, "Closing Rate")
 
-    work["Average Price"] = _numeric_series(
-        work,
-        "Average Price",
-    )
-
-    work["Closing Rate"] = _numeric_series(
-        work,
-        "Closing Rate",
-    )
-
-    # ---------------------------------
-    # ARRIVALS
-    # ---------------------------------
-    # Arrivals repeats for every membership row.
-    # Count it once per SalesRoom + Sales Type.
     arrival_group_columns = [
         column
-        for column in [
-            "SalesRoom",
-            "Sales Type",
-        ]
+        for column in ("SalesRoom", "Sales Type")
         if column in work.columns
     ]
 
     if arrival_group_columns:
-        arrival_rows = work.drop_duplicates(
-            subset=arrival_group_columns
-        )
-
         arrivals = float(
-            arrival_rows["Arrivals"].sum()
+            work.drop_duplicates(
+                subset=arrival_group_columns,
+            )["Arrivals"].sum()
         )
     else:
-        # Fallback when grouping columns are unavailable.
-        arrivals = float(
-            work["Arrivals"].max()
-        )
-
-    # ---------------------------------
-    # CONTRACTS
-    # ---------------------------------
+        arrivals = float(work["Arrivals"].max())
 
     contracts = float(
         work["Contracts Processable"].sum()
     )
-
-    # ---------------------------------
-    # VOLUME / AVERAGE PRICE
-    # ---------------------------------
 
     volume = float(
         (
@@ -172,12 +125,6 @@ def aggregate_actual_defaults(
         else 0.0
     )
 
-    # ---------------------------------
-    # CLOSING RATE
-    # ---------------------------------
-    # In kpi_table.csv Closing Rate is a ratio:
-    # 0.40 = 40%
-    # 1.50 = 150%
     valid_rates = work[
         (work["Closing Rate"] > 0)
         & (work["Contracts Processable"] > 0)
@@ -200,8 +147,8 @@ def aggregate_actual_defaults(
         )
 
     return (
-        float(arrivals),
-        float(contracts),
+        arrivals,
+        contracts,
         float(closing_rate_pct),
         float(avg_price),
     )
@@ -217,15 +164,9 @@ def summarize_metric_subset(
     """
     Summarize Forecast or Budget for one or more SalesRooms.
 
-    Supports:
-    1. Wide format:
-       SalesRoom, Arrivals, Qs, Contracts, Volume, etc.
-
-    2. Long format:
-       SalesRoom, Metric, Value
-
-    Additive metrics are summed. Ratios are recalculated
-    from the additive totals instead of being averaged.
+    Supports long format (SalesRoom, Metric, Value) and wide format.
+    Additive metrics are summed and ratios are rebuilt from totals when
+    the required additive inputs are available.
     """
 
     if df.empty:
@@ -233,176 +174,68 @@ def summarize_metric_subset(
 
     work = df.copy()
 
-    # ---------------------------------
-    # LONG FORMAT
-    # ---------------------------------
-
     if {"Metric", "Value"}.issubset(work.columns):
-        work["Metric"] = (
-            work["Metric"]
-            .map(_normalize_metric_name)
-        )
-
+        work["Metric"] = work["Metric"].map(_normalize_metric_name)
         work["Value"] = pd.to_numeric(
             work["Value"],
             errors="coerce",
         ).fillna(0.0)
 
-        grouped = (
-            work.groupby(
-                "Metric",
-                dropna=False,
-            )["Value"]
-            .sum()
-        )
+        grouped = work.groupby(
+            "Metric",
+            dropna=False,
+        )["Value"].sum()
 
-        arrivals = float(
-            grouped.get("Arrivals", 0.0)
-        )
+        arrivals = float(grouped.get("Arrivals", 0.0))
+        qs = float(grouped.get("Qs", 0.0))
+        contracts = float(grouped.get("Contracts", 0.0))
+        volume = float(grouped.get("Volume", 0.0))
 
-        qs = float(
-            grouped.get("Qs", 0.0)
-        )
+        def metric_mean(metric_name: str) -> float:
+            mask = work["Metric"].eq(metric_name)
+            if not mask.any():
+                return 0.0
+            return float(work.loc[mask, "Value"].mean())
 
-        contracts = float(
-            grouped.get("Contracts", 0.0)
-        )
-
-        volume = float(
-            grouped.get("Volume", 0.0)
-        )
-
-        # Fallback values only if additive metrics
-        # are not present in the file.
-        raw_avg_price = float(
-            work.loc[
-                work["Metric"].eq("Average Price"),
-                "Value",
-            ].mean()
-        ) if work["Metric"].eq("Average Price").any() else 0.0
-
-        raw_closing_rate = float(
-            work.loc[
-                work["Metric"].eq("Closing Rate"),
-                "Value",
-            ].mean()
-        ) if work["Metric"].eq("Closing Rate").any() else 0.0
-
-        raw_penetration = float(
-            work.loc[
-                work["Metric"].eq("Penetration"),
-                "Value",
-            ].mean()
-        ) if work["Metric"].eq("Penetration").any() else 0.0
-
-        raw_vpg = float(
-            work.loc[
-                work["Metric"].eq("VPG"),
-                "Value",
-            ].mean()
-        ) if work["Metric"].eq("VPG").any() else 0.0
-
-    # ---------------------------------
-    # WIDE FORMAT
-    # ---------------------------------
+        raw_avg_price = metric_mean("Average Price")
+        raw_closing_rate = metric_mean("Closing Rate")
+        raw_penetration = metric_mean("Penetration")
+        raw_vpg = metric_mean("VPG")
 
     else:
-        # Accept Contracts or Contracts Processable.
         if (
             "Contracts" not in work.columns
             and "Contracts Processable" in work.columns
         ):
             work = work.rename(
                 columns={
-                    "Contracts Processable": "Contracts"
+                    "Contracts Processable": "Contracts",
                 }
             )
 
-        arrivals_series = _numeric_series(
-            work,
-            "Arrivals",
-        )
+        arrivals_series = _numeric_series(work, "Arrivals")
+        qs_series = _numeric_series(work, "Qs")
+        contracts_series = _numeric_series(work, "Contracts")
+        avg_price_series = _numeric_series(work, "Average Price")
+        closing_rate_series = _numeric_series(work, "Closing Rate")
+        penetration_series = _numeric_series(work, "Penetration")
+        vpg_series = _numeric_series(work, "VPG")
+        volume_series = _numeric_series(work, "Volume")
 
-        qs_series = _numeric_series(
-            work,
-            "Qs",
-        )
+        arrivals = float(arrivals_series.sum())
+        qs = float(qs_series.sum())
+        contracts = float(contracts_series.sum())
+        volume = float(volume_series.sum())
 
-        contracts_series = _numeric_series(
-            work,
-            "Contracts",
-        )
-
-        avg_price_series = _numeric_series(
-            work,
-            "Average Price",
-        )
-
-        closing_rate_series = _numeric_series(
-            work,
-            "Closing Rate",
-        )
-
-        penetration_series = _numeric_series(
-            work,
-            "Penetration",
-        )
-
-        vpg_series = _numeric_series(
-            work,
-            "VPG",
-        )
-
-        volume_series = _numeric_series(
-            work,
-            "Volume",
-        )
-
-        arrivals = float(
-            arrivals_series.sum()
-        )
-
-        qs = float(
-            qs_series.sum()
-        )
-
-        contracts = float(
-            contracts_series.sum()
-        )
-
-        volume = float(
-            volume_series.sum()
-        )
-
-        # Derive Volume when target files do not
-        # provide it explicitly.
         if volume == 0 and contracts > 0:
             volume = float(
-                (
-                    avg_price_series
-                    * contracts_series
-                ).sum()
+                (avg_price_series * contracts_series).sum()
             )
 
-        raw_avg_price = float(
-            avg_price_series.mean()
-        ) if not avg_price_series.empty else 0.0
-
-        raw_closing_rate = float(
-            closing_rate_series.mean()
-        ) if not closing_rate_series.empty else 0.0
-
-        raw_penetration = float(
-            penetration_series.mean()
-        ) if not penetration_series.empty else 0.0
-
-        raw_vpg = float(
-            vpg_series.mean()
-        ) if not vpg_series.empty else 0.0
-
-    # ---------------------------------
-    # DERIVED SUMMARY KPIs
-    # ---------------------------------
+        raw_avg_price = float(avg_price_series.mean())
+        raw_closing_rate = float(closing_rate_series.mean())
+        raw_penetration = float(penetration_series.mean())
+        raw_vpg = float(vpg_series.mean())
 
     avg_price = (
         volume / contracts
@@ -422,7 +255,7 @@ def summarize_metric_subset(
 
     penetration = (
         qs / arrivals * 100
-        if arrivals > 0
+        if arrivals > 0 and qs > 0
         else (
             raw_penetration * 100
             if 0 < raw_penetration <= 1
