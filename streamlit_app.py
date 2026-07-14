@@ -236,16 +236,29 @@ init_simulator_context(
 if st.session_state.get("sim_reset_requested"):
     defaults = st.session_state.get(
         "sim_defaults",
-        {}
+        {},
     )
 
     if defaults:
-        st.session_state["sim_arrivals"] = defaults["arrivals"]
-        st.session_state["sim_penetration"] = defaults["penetration"]
-        st.session_state["sim_contracts"] = defaults["contracts"]
-        st.session_state["sim_closing_rate"] = defaults["closing_rate"]
-        st.session_state["sim_avg_price"] = defaults["avg_price"]
-        st.session_state["sim_driver"] = "default"
+        st.session_state["sim_arrivals"] = (
+            defaults["arrivals"]
+        )
+
+        st.session_state["sim_penetration"] = (
+            defaults["penetration"]
+        )
+
+        st.session_state["sim_contracts"] = (
+            defaults["contracts"]
+        )
+
+        st.session_state["sim_closing_rate"] = (
+            defaults["closing_rate"]
+        )
+
+        st.session_state["sim_avg_price"] = (
+            defaults["avg_price"]
+        )
 
     st.session_state["sim_reset_requested"] = False
 
