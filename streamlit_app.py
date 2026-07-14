@@ -236,7 +236,7 @@ init_simulator_context(
 if st.session_state.get("sim_reset_requested"):
     defaults = st.session_state.get(
         "sim_defaults",
-        {},
+        {}
     )
 
     if defaults:
