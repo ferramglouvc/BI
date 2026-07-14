@@ -223,12 +223,10 @@ else:
         row.get("Contracts Processable", 0)
     )
 
-    actual_closing_rate_default = float(
-        row.get("Closing Rate", 0)
-    )
-
-    if actual_closing_rate_default <= 1:
-        actual_closing_rate_default *= 100
+actual_closing_rate_default = (
+    float(row.get("Closing Rate", 0))
+    * 100
+)
 
     actual_avg_price_default = float(
         row.get("Average Price", 0)
