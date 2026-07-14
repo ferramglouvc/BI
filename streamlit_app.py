@@ -216,23 +216,22 @@ else:
     row = filtered.iloc[0]
 
     actual_arrivals_default = float(
-        row.get("Arrivals", 0)
+        row.get("Arrivals", 0) or 0
     )
 
     actual_contracts_default = float(
-        row.get("Contracts Processable", 0)
+        row.get("Contracts Processable", 0) or 0
     )
 
+    # En kpi_table.csv Closing Rate viene como razón:
+    # 0.40 = 40%
+    # 1.50 = 150%
     actual_closing_rate_default = (
-    float(row.get("Closing Rate", 0))
-    * 100
+        float(row.get("Closing Rate", 0) or 0) * 100
     )
-
-    if actual_closing_rate_default <= 1:
-    actual_closing_rate_default *= 100
 
     actual_avg_price_default = float(
-        row.get("Average Price", 0)
+        row.get("Average Price", 0) or 0
     )
 
 # Qs iniciales basadas en Contracts y Closing Rate
