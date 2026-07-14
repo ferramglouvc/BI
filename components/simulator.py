@@ -10,16 +10,12 @@ def _calculate_penetration(
     contracts: float,
     closing_rate: float,
 ) -> float:
-    """
-    Calculate Penetration % from:
-    Contracts -> Qs -> Penetration.
-    """
+    """Return Penetration % from Arrivals, Contracts and Closing Rate %."""
 
     if arrivals <= 0 or closing_rate <= 0:
         return 0.0
 
     qs = contracts / (closing_rate / 100)
-
     return (qs / arrivals) * 100
 
 
@@ -28,144 +24,77 @@ def _calculate_contracts(
     penetration: float,
     closing_rate: float,
 ) -> float:
-    """
-    Calculate Contracts from:
-    Arrivals -> Penetration -> Qs -> Contracts.
-    """
+    """Return Contracts from Arrivals, Penetration % and Closing Rate %."""
 
-    if arrivals <= 0:
+    if arrivals <= 0 or penetration < 0 or closing_rate < 0:
         return 0.0
 
     qs = arrivals * (penetration / 100)
-
     return qs * (closing_rate / 100)
 
 
 # =====================================
-# WIDGET CALLBACKS
+# CALLBACKS
 # =====================================
 
 def _sync_from_penetration() -> None:
-    """
-    When Penetration changes:
-    - Arrivals stays fixed
-    - Qs changes
-    - Contracts changes
-    """
-
-    arrivals = float(
-        st.session_state.get("sim_arrivals", 0)
-    )
-
-    penetration = float(
-        st.session_state.get("sim_penetration", 0)
-    )
-
-    closing_rate = float(
-        st.session_state.get("sim_closing_rate", 0)
-    )
+    arrivals = float(st.session_state.get("sim_arrivals", 0.0))
+    penetration = float(st.session_state.get("sim_penetration", 0.0))
+    closing_rate = float(st.session_state.get("sim_closing_rate", 0.0))
 
     st.session_state["sim_contracts"] = _calculate_contracts(
-        arrivals=arrivals,
-        penetration=penetration,
-        closing_rate=closing_rate,
-    )
-
-
-def _sync_from_closing_rate() -> None:
-    """
-    When Closing Rate changes:
-    - Penetration stays fixed
-    - Qs stays determined by Penetration
-    - Contracts changes
-    """
-
-    arrivals = float(
-        st.session_state.get("sim_arrivals", 0)
-    )
-
-    penetration = float(
-        st.session_state.get("sim_penetration", 0)
-    )
-
-    closing_rate = float(
-        st.session_state.get("sim_closing_rate", 0)
-    )
-
-    st.session_state["sim_contracts"] = _calculate_contracts(
-        arrivals=arrivals,
-        penetration=penetration,
-        closing_rate=closing_rate,
+        arrivals,
+        penetration,
+        closing_rate,
     )
 
 
 def _sync_from_contracts() -> None:
-    """
-    When Contracts changes:
-    - Closing Rate stays fixed
-    - Qs changes
-    - Penetration changes
-    """
-
-    arrivals = float(
-        st.session_state.get("sim_arrivals", 0)
-    )
-
-    contracts = float(
-        st.session_state.get("sim_contracts", 0)
-    )
-
-    closing_rate = float(
-        st.session_state.get("sim_closing_rate", 0)
-    )
+    arrivals = float(st.session_state.get("sim_arrivals", 0.0))
+    contracts = float(st.session_state.get("sim_contracts", 0.0))
+    closing_rate = float(st.session_state.get("sim_closing_rate", 0.0))
 
     st.session_state["sim_penetration"] = _calculate_penetration(
-        arrivals=arrivals,
-        contracts=contracts,
-        closing_rate=closing_rate,
+        arrivals,
+        contracts,
+        closing_rate,
+    )
+
+
+def _sync_from_closing_rate() -> None:
+    arrivals = float(st.session_state.get("sim_arrivals", 0.0))
+    penetration = float(st.session_state.get("sim_penetration", 0.0))
+    closing_rate = float(st.session_state.get("sim_closing_rate", 0.0))
+
+    st.session_state["sim_contracts"] = _calculate_contracts(
+        arrivals,
+        penetration,
+        closing_rate,
     )
 
 
 # =====================================
-# INITIALIZE SIMULATOR
+# INITIALIZATION
 # =====================================
 
 def init_simulator_context(context_key, defaults):
-    """
-    Inicializa todos los valores del simulador.
+    """Initialize simulator state when the filter context changes."""
 
-    También corrige sesiones antiguas que todavía no tengan
-    la clave sim_penetration.
-    """
+    arrivals = float(defaults.get("arrivals", 0.0) or 0.0)
+    contracts = float(defaults.get("contracts", 0.0) or 0.0)
+    closing_rate = float(defaults.get("closing_rate", 0.0) or 0.0)
+    avg_price = float(defaults.get("avg_price", 0.0) or 0.0)
 
-    arrivals = float(
-        defaults.get("arrivals", 0) or 0
-    )
-
-    contracts = float(
-        defaults.get("contracts", 0) or 0
-    )
-
-    closing_rate = float(
-        defaults.get("closing_rate", 0) or 0
-    )
-
-    avg_price = float(
-        defaults.get("avg_price", 0) or 0
-    )
-
-    # Calcula Qs a partir de Contracts y Closing Rate.
-    qs = (
-        contracts / (closing_rate / 100)
-        if closing_rate > 0
-        else 0
-    )
-
-    # Calcula Penetration a partir de Qs y Arrivals.
-    penetration = (
-        qs / arrivals * 100
-        if arrivals > 0
-        else 0
+    penetration = float(
+        defaults.get(
+            "penetration",
+            _calculate_penetration(
+                arrivals,
+                contracts,
+                closing_rate,
+            ),
+        )
+        or 0.0
     )
 
     normalized_defaults = {
@@ -176,112 +105,31 @@ def init_simulator_context(context_key, defaults):
         "avg_price": avg_price,
     }
 
-    required_keys = [
+    required_keys = {
         "sim_arrivals",
         "sim_penetration",
         "sim_contracts",
         "sim_closing_rate",
         "sim_avg_price",
-    ]
+    }
 
     context_changed = (
-        st.session_state.get("sim_context")
-        != context_key
+        st.session_state.get("sim_context") != context_key
     )
 
-    # Detecta sesiones antiguas donde falta sim_penetration
-    # u otra clave del simulador.
     state_incomplete = any(
         key not in st.session_state
         for key in required_keys
     )
 
     if context_changed or state_incomplete:
-        st.session_state["sim_defaults"] = (
-            normalized_defaults.copy()
-        )
-
-        st.session_state["sim_arrivals"] = (
-            normalized_defaults["arrivals"]
-        )
-
-        st.session_state["sim_penetration"] = (
-            normalized_defaults["penetration"]
-        )
-
-        st.session_state["sim_contracts"] = (
-            normalized_defaults["contracts"]
-        )
-
-        st.session_state["sim_closing_rate"] = (
-            normalized_defaults["closing_rate"]
-        )
-
-        st.session_state["sim_avg_price"] = (
-            normalized_defaults["avg_price"]
-        )
-
-        st.session_state["sim_context"] = context_key
-
-    # Calculate the initial Penetration from the existing data.
-    penetration = _calculate_penetration(
-        arrivals=arrivals,
-        contracts=contracts,
-        closing_rate=closing_rate,
-    )
-
-    normalized_defaults = {
-        "arrivals": arrivals,
-        "penetration": penetration,
-        "contracts": contracts,
-        "closing_rate": closing_rate,
-        "avg_price": avg_price,
-    }
-
-    required_state_keys = [
-        "sim_arrivals",
-        "sim_penetration",
-        "sim_contracts",
-        "sim_closing_rate",
-        "sim_avg_price",
-    ]
-
-    context_changed = (
-        st.session_state.get("sim_context")
-        != context_key
-    )
-
-    state_incomplete = any(
-        key not in st.session_state
-        for key in required_state_keys
-    )
-
-    if context_changed or state_incomplete:
-        st.session_state["sim_defaults"] = (
-            normalized_defaults.copy()
-        )
-
+        st.session_state["sim_defaults"] = normalized_defaults.copy()
         st.session_state["sim_arrivals"] = arrivals
-
-        st.session_state["sim_penetration"] = (
-            penetration
-        )
-
-        st.session_state["sim_contracts"] = (
-            contracts
-        )
-
-        st.session_state["sim_closing_rate"] = (
-            closing_rate
-        )
-
-        st.session_state["sim_avg_price"] = (
-            avg_price
-        )
-
-        st.session_state["sim_context"] = (
-            context_key
-        )
+        st.session_state["sim_penetration"] = penetration
+        st.session_state["sim_contracts"] = contracts
+        st.session_state["sim_closing_rate"] = closing_rate
+        st.session_state["sim_avg_price"] = avg_price
+        st.session_state["sim_context"] = context_key
 
 
 # =====================================
@@ -293,19 +141,13 @@ def request_simulator_reset() -> None:
 
 
 # =====================================
-# RENDER SIMULATOR
+# RENDER
 # =====================================
 
 def render_simulator() -> None:
     st.markdown(
-        """
-        <div
-            class="section-title"
-            style="margin-top:0rem; margin-bottom:0rem;"
-        >
-            Actuals Simulator
-        </div>
-        """,
+        "<div class='section-title' style='margin-top:0rem;"
+        "margin-bottom:0rem;'>Actuals Simulator</div>",
         unsafe_allow_html=True,
     )
 
@@ -314,20 +156,8 @@ def render_simulator() -> None:
         unsafe_allow_html=True,
     )
 
-    row1_col1, row1_col2 = st.columns(
-        2,
-        gap="small",
-    )
-
-    row2_col1, row2_col2 = st.columns(
-        2,
-        gap="small",
-    )
-
-    # =================================
-    # PENETRATION
-    # Replaces Arrivals as visible input
-    # =================================
+    row1_col1, row1_col2 = st.columns(2, gap="small")
+    row2_col1, row2_col2 = st.columns(2, gap="small")
 
     with row1_col1:
         st.number_input(
@@ -340,10 +170,6 @@ def render_simulator() -> None:
             label_visibility="visible",
         )
 
-    # =================================
-    # CONTRACTS
-    # =================================
-
     with row1_col2:
         st.number_input(
             "Contracts",
@@ -354,10 +180,6 @@ def render_simulator() -> None:
             on_change=_sync_from_contracts,
             label_visibility="visible",
         )
-
-    # =================================
-    # CLOSING RATE
-    # =================================
 
     with row2_col1:
         st.number_input(
@@ -370,10 +192,6 @@ def render_simulator() -> None:
             label_visibility="visible",
         )
 
-    # =================================
-    # AVERAGE PRICE
-    # =================================
-
     with row2_col2:
         st.number_input(
             "Average Price ($)",
@@ -385,19 +203,13 @@ def render_simulator() -> None:
         )
 
 
-# =====================================
-# BOTTOM ACTIONS
-# =====================================
-
 def render_bottom_actions() -> None:
     st.markdown(
         "<div style='margin-top:0.3rem;'></div>",
         unsafe_allow_html=True,
     )
 
-    left, center, right = st.columns(
-        [5, 2, 5]
-    )
+    _, center, _ = st.columns([5, 2, 5])
 
     with center:
         st.button(
@@ -405,5 +217,5 @@ def render_bottom_actions() -> None:
             help="Reset simulator",
             key="reset_simulator_btn",
             on_click=request_simulator_reset,
-            use_container_width=True,
+            width="stretch",
         )
