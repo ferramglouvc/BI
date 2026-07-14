@@ -59,6 +59,74 @@ render_login(USERS)
 validate_session()
 
 # =====================================
+# LOAD DATA
+# =====================================
+
+BASE_DIR = Path(__file__).resolve().parent
+DATA_DIR = BASE_DIR / "data"
+
+actual_path = DATA_DIR / "kpi_table.csv"
+
+actual_all = load_data(
+    actual_path.stat().st_mtime
+)
+
+# Limpia los corchetes de los encabezados:
+# [SalesRoom] -> SalesRoom
+# [Membership Type] -> Membership Type
+actual_all.columns = (
+    actual_all.columns
+    .astype(str)
+    .str.replace("[", "", regex=False)
+    .str.replace("]", "", regex=False)
+    .str.strip()
+)
+
+forecast_new = load_metric_file(
+    "forecast_new.csv",
+    (DATA_DIR / "forecast_new.csv").stat().st_mtime,
+)
+
+forecast_upg = load_metric_file(
+    "forecast_upgrades.csv",
+    (DATA_DIR / "forecast_upgrades.csv").stat().st_mtime,
+)
+
+budget_new = load_metric_file(
+    "budget_new.csv",
+    (DATA_DIR / "budget_new.csv").stat().st_mtime,
+)
+
+budget_upg = load_metric_file(
+    "budget_upgrades.csv",
+    (DATA_DIR / "budget_upgrades.csv").stat().st_mtime,
+)
+
+# =====================================
+# HEADER
+# =====================================
+
+title_col, logout_col = st.columns([20, 1])
+
+with title_col:
+    st.title("BI Calculator")
+
+data_date = get_data_date()
+
+st.caption(
+    f"Data until {data_date.strftime('%B %d, %Y')}"
+)
+
+# =====================================
+# FILTERS
+# =====================================
+
+project_leader, salesroom, selected_salesrooms = render_filters(
+    actual_all,
+    PROJECT_LEADERS,
+)
+
+# =====================================
 # SALES VIEW
 # =====================================
 
