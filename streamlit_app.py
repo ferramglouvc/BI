@@ -267,71 +267,40 @@ if st.session_state.get("sim_reset_requested"):
 # =====================================
 
 arrivals = float(
-    st.session_state["sim_arrivals"]
+    st.session_state.get("sim_arrivals", 0.0)
 )
 
 contracts = float(
-    st.session_state["sim_contracts"]
+    st.session_state.get("sim_contracts", 0.0)
 )
 
 closing_rate = float(
-    st.session_state["sim_closing_rate"]
+    st.session_state.get("sim_closing_rate", 0.0)
 )
 
 avg_price = float(
-    st.session_state["sim_avg_price"]
+    st.session_state.get("sim_avg_price", 0.0)
 )
 
 # =====================================
 # ACTUAL CALCULATIONS
 # =====================================
 
-# Si el usuario editó Contracts, mantenemos Contracts
-# y recalculamos Qs y Penetration.
-if driver == "contracts":
-
-    qs = (
-        contracts / (closing_rate / 100)
-        if closing_rate
-        else 0
-    )
-
-    penetration = (
-        qs / arrivals * 100
-        if arrivals
-        else 0
-    )
-
-    # La actualización ocurre antes de crear el widget.
-    st.session_state["sim_penetration"] = penetration
-
-# Para Penetration, Closing Rate, Average Price y estado inicial:
-# Arrivals queda fijo, Penetration determina Qs,
-# y Closing Rate determina Contracts.
-else:
-
-    qs = (
-        arrivals * (penetration / 100)
-        if arrivals
-        else 0
-    )
-
-    contracts = (
-        qs * (closing_rate / 100)
-        if qs and closing_rate
-        else 0
-    )
-
-    st.session_state["sim_contracts"] = contracts
-
-volume = contracts * avg_price
-
-vpg = (
-    volume / qs
-    if qs
-    else 0
+actual_metrics = calculate_actual_kpis(
+    arrivals,
+    contracts,
+    closing_rate,
+    avg_price,
 )
 
+qs = actual_metrics["Qs"]
+penetration = actual_metrics["Penetration"]
+volume = contracts * avg_price
+vpg = actual_metrics["VPG"]
+
+# Mantiene el valor visible de Penetration sincronizado.
+# Esto ocurre antes de render_simulator(), por lo que es seguro.
+st.session_state["sim_penetration"] = penetration
 # =====================================
 # PROJECTION
 # =====================================
