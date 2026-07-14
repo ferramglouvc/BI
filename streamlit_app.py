@@ -270,10 +270,6 @@ arrivals = float(
     st.session_state["sim_arrivals"]
 )
 
-penetration = float(
-    st.session_state["sim_penetration"]
-)
-
 contracts = float(
     st.session_state["sim_contracts"]
 )
@@ -284,11 +280,6 @@ closing_rate = float(
 
 avg_price = float(
     st.session_state["sim_avg_price"]
-)
-
-driver = st.session_state.get(
-    "sim_driver",
-    "default"
 )
 
 # =====================================
