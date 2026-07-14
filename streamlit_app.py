@@ -16,7 +16,10 @@ from components.simulator import (
 )
 from services.loaders import load_data, load_metric_file
 from services.aggregations import aggregate_actual_defaults, summarize_metric_subset
-from services.calculations import calculate_projection
+from services.calculations import (
+    calculate_actual_kpis,
+    calculate_projection,
+)
 from services.project_leaders import PROJECT_LEADERS
 from utils.dates import get_data_date
 
