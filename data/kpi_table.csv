@@ -1,4 +1,4 @@
-[SalesRoom]	[Sales Type]	[Membership Type]	[Average Price]	[Closing Rate]	[Arrivals]	[Contracts Processable]
+[SalesRoom],[Sales Type],[Membership Type],[Average Price],[Closing Rate]	[Arrivals],[Contracts Processable]
 BRCSL,N,Emerald,22181,0.5,260,2
 BRCSL,U,Gold,19900,1,23,1
 BRECU,N,Choices,6912.666667,0.818181818,726,9
