@@ -62,69 +62,27 @@ validate_session()
 # SALES VIEW
 # =====================================
 
-BASE_DIR = Path(__file__).resolve().parent
-DATA_DIR = BASE_DIR / "data"
-
-actual_path = DATA_DIR / "kpi_table.csv"
-actual_all = load_data(actual_path.stat().st_mtime)
-
-forecast_new = load_metric_file(
-    "forecast_new.csv",
-    (DATA_DIR / "forecast_new.csv").stat().st_mtime,
-)
-
-forecast_upg = load_metric_file(
-    "forecast_upgrades.csv",
-    (DATA_DIR / "forecast_upgrades.csv").stat().st_mtime,
-)
-
-budget_new = load_metric_file(
-    "budget_new.csv",
-    (DATA_DIR / "budget_new.csv").stat().st_mtime,
-)
-
-budget_upg = load_metric_file(
-    "budget_upgrades.csv",
-    (DATA_DIR / "budget_upgrades.csv").stat().st_mtime,
-)
-
-# =====================================
-# HEADER
-# =====================================
-
-title_col, logout_col = st.columns([20, 1])
-
-with title_col:
-    st.title("BI Calculator")
-
-from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
-
-def get_data_until_date():
-    now_cancun = datetime.now(ZoneInfo("America/Cancun"))
-    if now_cancun.hour < 11:
-        return now_cancun.date() - timedelta(days=2)
-    return now_cancun.date() - timedelta(days=1)
-
-data_date = get_data_until_date()
-st.caption(f"Data until {data_date.strftime('%B %d, %Y')}")
-
-# =====================================
-# FILTERS
-# =====================================
-
-project_leader, salesroom, selected_salesrooms = render_filters(actual_all, PROJECT_LEADERS)
-
 sales_view = st.segmented_control(
     "Sales View",
     ["New Sales", "Upgrades", "Cost Basis"],
-    default="Cost Basis"
+    default="Cost Basis",
+    key="sales_view",
 )
+
+# =====================================
+# APPLY SALES VIEW
+# =====================================
 
 if sales_view == "New Sales":
     df = actual_all[
-        (actual_all["SalesRoom"].isin(selected_salesrooms)) &
-        (actual_all["Sales Type"].astype(str).str.strip().str.upper() == "N")
+        actual_all["SalesRoom"].isin(selected_salesrooms)
+        & (
+            actual_all["Sales Type"]
+            .astype(str)
+            .str.strip()
+            .str.upper()
+            == "N"
+        )
     ].copy()
 
     forecast_df = forecast_new
@@ -132,8 +90,14 @@ if sales_view == "New Sales":
 
 elif sales_view == "Upgrades":
     df = actual_all[
-        (actual_all["SalesRoom"].isin(selected_salesrooms)) &
-        (actual_all["Sales Type"].astype(str).str.strip().str.upper() == "U")
+        actual_all["SalesRoom"].isin(selected_salesrooms)
+        & (
+            actual_all["Sales Type"]
+            .astype(str)
+            .str.strip()
+            .str.upper()
+            == "U"
+        )
     ].copy()
 
     forecast_df = forecast_upg
@@ -144,8 +108,64 @@ else:
         actual_all["SalesRoom"].isin(selected_salesrooms)
     ].copy()
 
-    forecast_df = pd.concat([forecast_new, forecast_upg], ignore_index=True)
-    budget_df = pd.concat([budget_new, budget_upg], ignore_index=True)
+    forecast_df = pd.concat(
+        [forecast_new, forecast_upg],
+        ignore_index=True,
+    )
+
+    budget_df = pd.concat(
+        [budget_new, budget_upg],
+        ignore_index=True,
+    )
+
+# =====================================
+# MEMBERSHIP TYPE
+# =====================================
+
+if "Membership Type" not in df.columns:
+    st.error(
+        "The column 'Membership Type' was not found "
+        "in kpi_table.csv."
+    )
+
+    st.code(
+        "\n".join(str(column) for column in df.columns)
+    )
+
+    st.stop()
+
+df["Membership Type"] = (
+    df["Membership Type"]
+    .astype("string")
+    .str.strip()
+)
+
+membership_values = sorted(
+    value
+    for value in df["Membership Type"]
+    .dropna()
+    .unique()
+    .tolist()
+    if value
+)
+
+membership_type = st.selectbox(
+    "Membership Type",
+    options=["All", *membership_values],
+    index=0,
+    key=(
+        f"membership_filter::"
+        f"{sales_view}::"
+        f"{project_leader}::"
+        f"{salesroom}"
+    ),
+)
+
+if membership_type != "All":
+    df = df[
+        df["Membership Type"].eq(membership_type)
+    ].copy()
+    
 # =====================================
 # FILTER DATA
 # =====================================
