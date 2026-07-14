@@ -190,7 +190,12 @@ if budget_filtered.empty:
 # ACTUAL DEFAULTS
 # =====================================
 
-context_key = f"{sales_view}::{project_leader}::{salesroom}"
+context_key = (
+    f"{sales_view}::"
+    f"{project_leader}::"
+    f"{salesroom}::"
+    f"{membership_type}"
+)
 
 if len(filtered) > 1:
     (
