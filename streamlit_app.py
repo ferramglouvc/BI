@@ -16,7 +16,7 @@ from components.simulator import (
 )
 from services.loaders import load_data, load_metric_file
 from services.aggregations import aggregate_actual_defaults, summarize_metric_subset
-from services.calculations import calculate_actual_kpis, calculate_projection
+from services.calculations import calculate_projection
 from services.project_leaders import PROJECT_LEADERS
 from utils.dates import get_data_date
 
@@ -170,33 +170,82 @@ if budget_filtered.empty:
 context_key = f"{sales_view}::{project_leader}::{salesroom}"
 
 if len(filtered) > 1:
-    actual_arrivals_default, actual_contracts_default, actual_closing_rate_default, actual_avg_price_default = aggregate_actual_defaults(filtered)
+    (
+        actual_arrivals_default,
+        actual_contracts_default,
+        actual_closing_rate_default,
+        actual_avg_price_default,
+    ) = aggregate_actual_defaults(filtered)
+
 else:
     row = filtered.iloc[0]
-    actual_arrivals_default = float(row.get("Arrivals", 0))
-    actual_contracts_default = float(row.get("Contracts Processable", 0))
-    actual_closing_rate_default = float(row.get("Closing Rate", 0))
+
+    actual_arrivals_default = float(
+        row.get("Arrivals", 0)
+    )
+
+    actual_contracts_default = float(
+        row.get("Contracts Processable", 0)
+    )
+
+    actual_closing_rate_default = float(
+        row.get("Closing Rate", 0)
+    )
+
     if actual_closing_rate_default <= 1:
         actual_closing_rate_default *= 100
-    actual_avg_price_default = float(row.get("Average Price", 0))
 
+    actual_avg_price_default = float(
+        row.get("Average Price", 0)
+    )
+
+# Qs iniciales basadas en Contracts y Closing Rate
+actual_qs_default = (
+    actual_contracts_default
+    / (actual_closing_rate_default / 100)
+    if actual_closing_rate_default
+    else 0
+)
+
+# Penetration inicial basada en Qs y Arrivals
+actual_penetration_default = (
+    actual_qs_default
+    / actual_arrivals_default
+    * 100
+    if actual_arrivals_default
+    else 0
+)
+
+# Arrivals se conserva en el estado como base fija,
+# pero ya no será visible como input.
 init_simulator_context(
     context_key,
     {
         "arrivals": actual_arrivals_default,
+        "penetration": actual_penetration_default,
         "contracts": actual_contracts_default,
         "closing_rate": actual_closing_rate_default,
         "avg_price": actual_avg_price_default,
     }
 )
 
+# =====================================
+# RESET SIMULATOR
+# =====================================
+
 if st.session_state.get("sim_reset_requested"):
-    defaults = st.session_state.get("sim_defaults", {})
+    defaults = st.session_state.get(
+        "sim_defaults",
+        {}
+    )
+
     if defaults:
         st.session_state["sim_arrivals"] = defaults["arrivals"]
+        st.session_state["sim_penetration"] = defaults["penetration"]
         st.session_state["sim_contracts"] = defaults["contracts"]
         st.session_state["sim_closing_rate"] = defaults["closing_rate"]
         st.session_state["sim_avg_price"] = defaults["avg_price"]
+        st.session_state["sim_driver"] = "default"
 
     st.session_state["sim_reset_requested"] = False
 
@@ -204,20 +253,80 @@ if st.session_state.get("sim_reset_requested"):
 # CURRENT SIMULATOR VALUES
 # =====================================
 
-arrivals = float(st.session_state["sim_arrivals"])
-contracts = float(st.session_state["sim_contracts"])
-closing_rate = float(st.session_state["sim_closing_rate"])
-avg_price = float(st.session_state["sim_avg_price"])
+arrivals = float(
+    st.session_state["sim_arrivals"]
+)
+
+penetration = float(
+    st.session_state["sim_penetration"]
+)
+
+contracts = float(
+    st.session_state["sim_contracts"]
+)
+
+closing_rate = float(
+    st.session_state["sim_closing_rate"]
+)
+
+avg_price = float(
+    st.session_state["sim_avg_price"]
+)
+
+driver = st.session_state.get(
+    "sim_driver",
+    "default"
+)
 
 # =====================================
 # ACTUAL CALCULATIONS
 # =====================================
 
-actual_metrics = calculate_actual_kpis(arrivals, contracts, closing_rate, avg_price)
-qs = actual_metrics["Qs"]
-penetration = actual_metrics["Penetration"]
+# Si el usuario editó Contracts, mantenemos Contracts
+# y recalculamos Qs y Penetration.
+if driver == "contracts":
+
+    qs = (
+        contracts / (closing_rate / 100)
+        if closing_rate
+        else 0
+    )
+
+    penetration = (
+        qs / arrivals * 100
+        if arrivals
+        else 0
+    )
+
+    # La actualización ocurre antes de crear el widget.
+    st.session_state["sim_penetration"] = penetration
+
+# Para Penetration, Closing Rate, Average Price y estado inicial:
+# Arrivals queda fijo, Penetration determina Qs,
+# y Closing Rate determina Contracts.
+else:
+
+    qs = (
+        arrivals * (penetration / 100)
+        if arrivals
+        else 0
+    )
+
+    contracts = (
+        qs * (closing_rate / 100)
+        if qs and closing_rate
+        else 0
+    )
+
+    st.session_state["sim_contracts"] = contracts
+
 volume = contracts * avg_price
-vpg = actual_metrics["VPG"]
+
+vpg = (
+    volume / qs
+    if qs
+    else 0
+)
 
 # =====================================
 # PROJECTION
