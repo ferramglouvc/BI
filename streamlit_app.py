@@ -165,6 +165,13 @@ if membership_type != "All":
     df = df[
         df["Membership Type"].eq(membership_type)
     ].copy()
+
+if membership_type != "All":
+    st.caption(
+        "Forecast and Budget remain at SalesRoom level "
+        "because the target files do not include "
+        "Membership Type."
+    )
     
 # =====================================
 # FILTER DATA
