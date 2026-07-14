@@ -130,30 +130,98 @@ def _sync_from_contracts() -> None:
 # INITIALIZE SIMULATOR
 # =====================================
 
-def init_simulator_context(
-    context_key,
-    defaults,
-):
+def init_simulator_context(context_key, defaults):
     """
-    Initialize the simulator whenever Sales View,
-    Project Leader, SalesRoom, or another context changes.
+    Inicializa todos los valores del simulador.
+
+    También corrige sesiones antiguas que todavía no tengan
+    la clave sim_penetration.
     """
 
     arrivals = float(
-        defaults.get("arrivals", 0)
+        defaults.get("arrivals", 0) or 0
     )
 
     contracts = float(
-        defaults.get("contracts", 0)
+        defaults.get("contracts", 0) or 0
     )
 
     closing_rate = float(
-        defaults.get("closing_rate", 0)
+        defaults.get("closing_rate", 0) or 0
     )
 
     avg_price = float(
-        defaults.get("avg_price", 0)
+        defaults.get("avg_price", 0) or 0
     )
+
+    # Calcula Qs a partir de Contracts y Closing Rate.
+    qs = (
+        contracts / (closing_rate / 100)
+        if closing_rate > 0
+        else 0
+    )
+
+    # Calcula Penetration a partir de Qs y Arrivals.
+    penetration = (
+        qs / arrivals * 100
+        if arrivals > 0
+        else 0
+    )
+
+    normalized_defaults = {
+        "arrivals": arrivals,
+        "penetration": penetration,
+        "contracts": contracts,
+        "closing_rate": closing_rate,
+        "avg_price": avg_price,
+    }
+
+    required_keys = [
+        "sim_arrivals",
+        "sim_penetration",
+        "sim_contracts",
+        "sim_closing_rate",
+        "sim_avg_price",
+    ]
+
+    context_changed = (
+        st.session_state.get("sim_context")
+        != context_key
+    )
+
+    # Detecta sesiones antiguas donde falta sim_penetration
+    # u otra clave del simulador.
+    state_incomplete = any(
+        key not in st.session_state
+        for key in required_keys
+    )
+
+    if context_changed or state_incomplete:
+        st.session_state["sim_defaults"] = (
+            normalized_defaults.copy()
+        )
+
+        st.session_state["sim_arrivals"] = (
+            normalized_defaults["arrivals"]
+        )
+
+        st.session_state["sim_penetration"] = (
+            normalized_defaults["penetration"]
+        )
+
+        st.session_state["sim_contracts"] = (
+            normalized_defaults["contracts"]
+        )
+
+        st.session_state["sim_closing_rate"] = (
+            normalized_defaults["closing_rate"]
+        )
+
+        st.session_state["sim_avg_price"] = (
+            normalized_defaults["avg_price"]
+        )
+
+        st.session_state["sim_context"] = context_key
 
     # Calculate the initial Penetration from the existing data.
     penetration = _calculate_penetration(
